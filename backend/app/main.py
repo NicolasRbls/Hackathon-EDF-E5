@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .database import engine, Base
 from . import models
-from .routers import devices
+from .routers import devices, actions, stats
 
 # Create tables automatically on startup
 try:
@@ -13,6 +13,8 @@ except Exception as e:
 app = FastAPI(title="EDF Hackathon Tracker")
 
 app.include_router(devices.router)
+app.include_router(actions.router)
+app.include_router(stats.router)
 
 @app.get("/")
 def read_root():
