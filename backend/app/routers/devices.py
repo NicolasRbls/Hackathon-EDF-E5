@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from .. import models, schemas, database
+from ..database import get_db
 
 router = APIRouter(
     prefix="/devices",
@@ -8,13 +9,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# Dependency
-def get_db():
-    db = database.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+
 
 @router.post("/", response_model=schemas.Device, status_code=status.HTTP_201_CREATED)
 def create_device(device: schemas.DeviceCreate, db: Session = Depends(get_db)):
