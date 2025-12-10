@@ -1,6 +1,6 @@
 # ⚡ EDF SEI Corse - Suivi des Concentrateurs CPL
 
-Une solution moderne et performante pour le suivi du cycle de vie des concentrateurs CPL en Corse. Conçue pour le **Hackathon EDF 2024**.
+Une solution moderne et performante pour le suivi du cycle de vie des concentrateurs CPL en Corse. Conçue pour le **Hackathon EDF 2025**.
 
 ---
 
