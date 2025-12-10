@@ -63,6 +63,7 @@ python3 -m venv venv           # Créer l'environnement virtuel
 source venv/bin/activate       # Activer (Linux/Mac)
 pip install -r requirements.txt # Installer les dépendances
 uvicorn app.main:app --reload  # Lancer le serveur
+pytest tests/                  # Lancer les tests
 ```
 > L'API sera accessible sur : `http://localhost:8000`  
 > Documentation interactive : `http://localhost:8000/docs`
