@@ -38,3 +38,5 @@ install:
 load-data:
 	@echo "📥 Importing Data from CSV..."
 	@cd backend && . venv/bin/activate && python -m app.import_data
+	@echo "👤 Creating Admin User..."
+	@cd backend && . venv/bin/activate && python -m app.create_admin

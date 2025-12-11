@@ -16,15 +16,22 @@ def create_initial_admin():
             return
 
         print("Creating default admin user...")
-        hashed_pw = security.get_password_hash("admin123")
+        import os
+        from dotenv import load_dotenv
+        load_dotenv()
+        
+        adm_user = os.getenv("ADMIN_USERNAME", "admin")
+        adm_pass = os.getenv("ADMIN_PASSWORD", "admin123")
+        
+        hashed_pw = security.get_password_hash(adm_pass)
         admin_user = models.User(
-            username="admin",
+            username=adm_user,
             password_hash=hashed_pw,
             role=models.UserRole.ADMIN
         )
         db.add(admin_user)
         db.commit()
-        print("✅ Admin user created: admin / admin123")
+        print(f"✅ Admin user created: {adm_user} / {'*' * len(adm_pass)}")
         
     finally:
         db.close()

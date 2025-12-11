@@ -10,6 +10,9 @@ from app.database import SQLALCHEMY_DATABASE_URL
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Ensure tables exist
+Base.metadata.create_all(bind=engine)
+
 def parse_date(date_str):
     if not date_str:
         return None
