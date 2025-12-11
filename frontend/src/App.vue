@@ -1,9 +1,13 @@
 <template>
   <div id="app" class="min-h-screen bg-white dark:bg-zinc-900 dark:text-gray-200">
-      <div class="h-full w-full max-w-4xl m-auto dark:bg-zinc-900">
+    <layout-default>
         <router-view />
-      </div>
+    </layout-default>
   </div>
 </template>
 
-<script> export default { name: 'App' } </script>
+<script> import LayoutDefault from "./components/layouts/main.vue";
+
+export default { name: 'App',
+  components: {LayoutDefault}
+} </script>
