@@ -140,6 +140,9 @@ def create_action(
 
         elif action.action_type == models.ActionType.DEPOSE:
             # Pose -> A Tester (Labo)
+            if current_status != models.DeviceStatus.POSE:
+                raise HTTPException(status_code=400, detail=f"Device {target.serial_number} must be installed (POSE) to be removed. Current: {current_status}")
+            
             target.current_status = models.DeviceStatus.A_TESTER
             target.affectation = models.TypeAffectation.LABO
 
