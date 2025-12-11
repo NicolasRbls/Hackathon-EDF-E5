@@ -10,23 +10,27 @@ def test_stats_stocks(client, db_session):
     h = {"Authorization": f"Bearer {t}"}
 
     # Setup Data
-    # D1: Create -> Reception -> Transfert BO -> Pose (Status: POSE, Aff: BO Nord)
-    client.post("/devices/", json={"serial_number": "D1"})
-    client.post("/actions/", json={"device_serial": "D1", "action_type": "RECEPTION", "user_id": "u"}, headers=h)
-    client.post("/actions/", json={"device_serial": "D1", "action_type": "TRANSFERT", "new_affectation": "BO Nord", "user_id": "u"}, headers=h)
-    client.post("/actions/", json={"device_serial": "D1", "action_type": "POSE", "poste_pose": "P1", "user_id": "u"}, headers=h)
+    # D1 Cluster: Carton C1 -> BO Nord -> Pose
+    for i in range(4):
+        client.post("/devices/", json={"serial_number": f"D1-{i}", "num_carton": "C1"})
+        
+    client.post("/actions/bulk", json={"num_carton": "C1", "action_type": "RECEPTION", "user_id": "u"}, headers=h)
+    client.post("/actions/bulk", json={"num_carton": "C1", "action_type": "TRANSFERT", "new_affectation": "BO Nord", "user_id": "u"}, headers=h)
+    # Pose Single D1-0
+    client.post("/actions/", json={"device_serial": "D1-0", "action_type": "POSE", "poste_pose": "P1", "user_id": "u"}, headers=h)
 
-    # D2: Create -> Reception (Status: EN_STOCK, Aff: Magasin)
-    client.post("/devices/", json={"serial_number": "D2"})
-    client.post("/actions/", json={"device_serial": "D2", "action_type": "RECEPTION", "user_id": "u"}, headers=h)
+    # D2 Cluster: Carton C2 -> Magasin Stock
+    for i in range(4):
+         client.post("/devices/", json={"serial_number": f"D2-{i}", "num_carton": "C2"})
+    client.post("/actions/bulk", json={"num_carton": "C2", "action_type": "RECEPTION", "user_id": "u"}, headers=h)
 
     response = client.get("/stats/stocks")
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
 
-    # Expect Structure: {"Magasin": {"en_stock": 1}, "BO Nord": {"pose": 1}}
+    # Expect Structure: {"Magasin": {"en_stock": 4}, "BO Nord": {"pose": 1, "en_stock": 3}}
     assert "Magasin" in data
-    assert data["Magasin"]["en_stock"] == 1
+    assert data["Magasin"]["en_stock"] == 4
     
     assert "BO Nord" in data
     assert data["BO Nord"]["pose"] == 1
@@ -39,9 +43,12 @@ def test_dashboard_history(client, db_session):
     t = client.post("/auth/login", data={"username": "a2", "password": "pw"}).json()["access_token"]
     h = {"Authorization": f"Bearer {t}"}
 
-    client.post("/devices/", json={"serial_number": "D3"})
-    client.post("/actions/", json={"device_serial": "D3", "action_type": "RECEPTION", "user_id": "u"}, headers=h)
-    client.post("/actions/", json={"device_serial": "D3", "action_type": "TRANSFERT", "new_affectation": "BO Sud", "user_id": "u"}, headers=h)
+    # Setup Carton C3
+    for i in range(4):
+        client.post("/devices/", json={"serial_number": f"D3-{i}", "num_carton": "C3"})
+
+    client.post("/actions/bulk", json={"num_carton": "C3", "action_type": "RECEPTION", "user_id": "u"}, headers=h)
+    client.post("/actions/bulk", json={"num_carton": "C3", "action_type": "TRANSFERT", "new_affectation": "BO Sud", "user_id": "u"}, headers=h)
 
     response = client.get("/dashboard/history")
     assert response.status_code == status.HTTP_200_OK

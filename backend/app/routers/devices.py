@@ -61,6 +61,15 @@ def create_device(device: schemas.DeviceCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Device already registered")
     
     # Create new device with defaults (EN_LIVRAISON, MAGASIN)
+    # Check Carton Capacity (Max 4)
+    if device.num_carton:
+        count_in_carton = db.query(models.Device).filter(models.Device.num_carton == device.num_carton).count()
+        if count_in_carton >= 4:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Carton {device.num_carton} is full (Max 4 devices)."
+            )
+
     new_device = models.Device(
         serial_number=device.serial_number,
         num_carton=device.num_carton,

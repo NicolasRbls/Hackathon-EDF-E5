@@ -12,35 +12,36 @@ def test_perform_action_lifecycle(client, db_session):
     token = client.post("/auth/login", data={"username": "admin_test", "password": "admin123"}).json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    # 1. Create Device
-    response = client.post("/devices/", json={"serial_number": "ACT-001", "num_carton": "C1"})
-    assert response.status_code == 201
+    # 1. Create Device Cluster (Carton C1 Needs 4 devices)
+    for i in range(4):
+        s = f"ACT-00{i+1}"
+        client.post("/devices/", json={"serial_number": s, "num_carton": "C1"})
+        
+    target_device = "ACT-001"
 
-    # 2. RECEPTION (Magasin)
-    response = client.post("/actions/", json={
-        "device_serial": "ACT-001",
+    # 2. RECEPTION (Magasin) - MUST USE BULK CARTON
+    response = client.post("/actions/bulk", json={
         "action_type": "RECEPTION",
-        "user_id": "ignored_in_v2" 
+        "num_carton": "C1",
+        "user_id": "ignored" 
     }, headers=headers)
     assert response.status_code == 200
-    data = response.json()
-    assert data["action_type"] == "RECEPTION"
     
     # Verify State
-    device = client.get("/devices/ACT-001").json()
+    device = client.get(f"/devices/{target_device}").json()
     assert device["current_status"] == "en_stock"
     assert device["affectation"] == "Magasin"
 
-    # 3. TRANSFERT (Magasin -> BO Nord)
-    response = client.post("/actions/", json={
-        "device_serial": "ACT-001",
+    # 3. TRANSFERT (Magasin -> BO Nord) - MUST USE BULK CARTON
+    response = client.post("/actions/bulk", json={
         "action_type": "TRANSFERT",
         "new_affectation": "BO Nord",
+        "num_carton": "C1",
         "user_id": "ignored"
     }, headers=headers)
     assert response.status_code == 200
     
-    device = client.get("/devices/ACT-001").json()
+    device = client.get(f"/devices/{target_device}").json()
     assert device["affectation"] == "BO Nord"
 
     # 4. POSE (BO Nord)

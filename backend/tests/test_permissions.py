@@ -18,23 +18,29 @@ def test_zone_permissions(client, db_session):
     header_sud = {"Authorization": f"Bearer {token_sud}"}
 
     # 2. Setup Device in BO NORD
-    # We need to manually place it there because 'user_nord' cant create devices or transfer from magasin (only magasin can).
-    # So lets use Admin to setup the board.
-    client.post("/devices/", json={"serial_number": "D-NORD", "affectation": "BO Nord", "current_status": "en_stock"}) 
-    # Wait, POST /devices defaults to Magasin. We need a TRANSFERT.
-    # Let's interact as Admin.
+    # We need to manually place it there using Admin and Full Carton
     token_ul = client.post("/auth/login", data={"username": "admin", "password": "pw"}).json()["access_token"]
     header_admin = {"Authorization": f"Bearer {token_ul}"}
     
-    client.post("/devices/", json={"serial_number": "D-NORD"}, headers=header_admin) # Magasin/Livraison
-    client.post("/actions/", json={"device_serial": "D-NORD", "action_type": "RECEPTION", "user_id": "admin"}, headers=header_admin)
-    client.post("/actions/", json={"device_serial": "D-NORD", "action_type": "TRANSFERT", "new_affectation": "BO Nord", "user_id": "admin"}, headers=header_admin)
+    # Create Carton of 4
+    for i in range(4):
+        client.post("/devices/", json={"serial_number": f"D-NORD-{i}", "num_carton": "C-NORD"}, headers=header_admin) 
     
-    # Now D-NORD is in BO Nord.
+    target_serial = "D-NORD-0"
+    
+    # Reception & Transfert via Bulk
+    client.post("/actions/bulk", json={"num_carton": "C-NORD", "action_type": "RECEPTION", "user_id": "admin"}, headers=header_admin)
+    client.post("/actions/bulk", json={"num_carton": "C-NORD", "action_type": "TRANSFERT", "new_affectation": "BO Nord", "user_id": "admin"}, headers=header_admin)
+    
+    # Now D-NORD-0 is in BO Nord.
     
     # 3. Test: BO Nord User tries to POSE (Should Pass)
+    # Check if device exists first for debugging
+    d_check = client.get(f"/devices/{target_serial}")
+    assert d_check.status_code == 200, f"Device {target_serial} missing! {d_check.json()}"
+
     res = client.post("/actions/", json={
-        "device_serial": "D-NORD", 
+        "device_serial": target_serial, 
         "action_type": "POSE", 
         "poste_pose": "P1",
         "user_id": "ignored"
@@ -43,7 +49,7 @@ def test_zone_permissions(client, db_session):
     
     # 4. Test: BO Sud User tries to DEPOSE (Should Fail - Wrong Zone)
     res_fail = client.post("/actions/", json={
-        "device_serial": "D-NORD", 
+        "device_serial": target_serial, 
         "action_type": "DEPOSE", 
         "user_id": "ignored"
     }, headers=header_sud)
