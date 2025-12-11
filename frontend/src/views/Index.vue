@@ -19,17 +19,17 @@
       </div>
 
 
-      <div class="card aspect-video grid items-center" @click="navigateTo('/manager')">
+      <div class="card aspect-video grid items-center" @click="navigateTo('/labo')">
           <Icon name="Briefcase" size="64" class="m-auto"/>
           <h2 class="text-center text-2xl">Labo</h2>
       </div>
 
-      <div class="card aspect-video grid items-center" @click="navigateTo('/manager')">
+      <div class="card aspect-video grid items-center" @click="navigateTo('/admin')">
           <Icon name="Briefcase" size="64" class="m-auto"/>
           <h2 class="text-center text-2xl">Admin</h2>
       </div>
 
-      <div class="card aspect-video grid items-center justify-center md:col-span-2" @click="navigateTo('/manager')">
+      <div class="card aspect-video grid items-center justify-center md:col-span-2" @click="navigateTo('/dashboard')">
           <Icon name="Briefcase" size="64" class="m-auto"/>
           <h2 class="text-center text-2xl">Dashboard</h2>
       </div>

@@ -7,10 +7,10 @@
         Retour
       </button>
       <h1 class="text-4xl font-bold">
-        Interface <span class="text-orange-500">Magasin</span>
+        Interface <span class="text-orange-500">Dashboard</span>
       </h1>
     </div>
-    <!--todo rajouter une liste des trucs qu'on peu faire en tant que technicien-->
+    <!--todo rajouter un dashboard avec graphs etc... un truc qui fait plaisir aux managers-->
   </div>
 </template>
 
@@ -18,7 +18,7 @@
 import Icon from "../../../../components/lucide/Icon.vue";
 
 export default {
-  name: 'Staff',
+  name: 'dashboard',
   components: {Icon}
 }
 </script>
