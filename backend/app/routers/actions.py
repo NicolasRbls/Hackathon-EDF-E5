@@ -137,6 +137,11 @@ def create_action(
 
             target.current_status = models.DeviceStatus.POSE
             target.poste_pose = action.poste_pose
+            
+            # Save GPS Coords if provided
+            if action.latitude is not None and action.longitude is not None:
+                target.latitude = action.latitude
+                target.longitude = action.longitude
 
         elif action.action_type == models.ActionType.DEPOSE:
             # Pose -> A Tester (Labo)

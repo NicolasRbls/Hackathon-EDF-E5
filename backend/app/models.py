@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Enum, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from .database import Base
 import enum
@@ -42,6 +42,10 @@ class Device(Base):
     num_carton = Column(String, nullable=True, index=True)
     operateur = Column(String, nullable=True) # Bouygues, Orange...
     poste_pose = Column(String, nullable=True) # ID of the electical post (only if POSE)
+    
+    # Geolocation (for Map Display)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     
     last_updated = Column(DateTime, default=datetime.utcnow)
 

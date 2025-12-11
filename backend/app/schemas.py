@@ -16,6 +16,9 @@ class Device(DeviceBase):
     id: int
     current_status: DeviceStatus
     affectation: TypeAffectation
+    affectation: TypeAffectation
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     last_updated: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -29,6 +32,8 @@ class ActionCreate(BaseModel):
     new_affectation: Optional[TypeAffectation] = None
     new_status: Optional[DeviceStatus] = None
     poste_pose: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 class BulkActionCreate(BaseModel):
     action_type: ActionType
@@ -40,9 +45,11 @@ class BulkActionCreate(BaseModel):
     num_carton: Optional[str] = None # Apply to all devices in this carton
     
     # Context
-    new_affectation: Optional[TypeAffectation] = None
     new_status: Optional[DeviceStatus] = None
+    new_affectation: Optional[TypeAffectation] = None
     poste_pose: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 class History(BaseModel):
     id: int
