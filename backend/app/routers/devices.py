@@ -1,12 +1,57 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas
+from typing import List, Optional
 
 router = APIRouter(
     prefix="/devices",
     tags=["devices"]
 )
+
+@router.get("/dictionaries")
+def get_dictionaries():
+    """
+    Returns valid values for Enums to populate Frontend Dropdowns.
+    """
+    return {
+        "status": [e.value for e in models.DeviceStatus],
+        "affectation": [e.value for e in models.TypeAffectation],
+        "action_type": [e.value for e in models.ActionType]
+    }
+
+@router.get("/search", response_model=List[schemas.Device])
+def search_devices(
+    q: Optional[str] = None, # General search (serial, carton)
+    status: Optional[models.DeviceStatus] = None,
+    affectation: Optional[models.TypeAffectation] = None,
+    num_carton: Optional[str] = None,
+    operateur: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Device)
+    
+    if q:
+        # Simple fuzzy search
+        query = query.filter(
+            (models.Device.serial_number.ilike(f"%{q}%")) | 
+            (models.Device.num_carton.ilike(f"%{q}%")) |
+            (models.Device.poste_pose.ilike(f"%{q}%"))
+        )
+    
+    if status:
+        query = query.filter(models.Device.current_status == status)
+    
+    if affectation:
+        query = query.filter(models.Device.affectation == affectation)
+        
+    if num_carton:
+        query = query.filter(models.Device.num_carton == num_carton)
+        
+    if operateur:
+        query = query.filter(models.Device.operateur == operateur)
+        
+    return query.limit(100).all()
 
 @router.post("/", response_model=schemas.Device, status_code=status.HTTP_201_CREATED)
 def create_device(device: schemas.DeviceCreate, db: Session = Depends(get_db)):

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas
 from datetime import datetime
+from typing import List
 
 router = APIRouter(
     prefix="/actions",
@@ -108,4 +109,67 @@ def create_action(action: schemas.ActionCreate, db: Session = Depends(get_db)):
     db.add(history_entry)
     db.commit()
     db.refresh(history_entry)
-    return history_entry
+    
+    # Explicit conversion to avoid Pydantic/SQLAlchemy Enum mismatch issues
+    return schemas.History(
+        id=history_entry.id,
+        device_id=history_entry.device_id,
+        action_type=history_entry.action_type,
+        timestamp=history_entry.timestamp,
+        user_id=history_entry.user_id,
+        details=history_entry.details
+    )
+@router.post("/bulk", response_model=List[schemas.History])
+def bulk_create_action(action: schemas.BulkActionCreate, db: Session = Depends(get_db)):
+    """
+    Perform an action on multiple devices at once.
+    Target by list of Serials OR by Key (Carton Number).
+    """
+    target_devices = []
+    
+    # 1. Identify Targets
+    if action.device_serials:
+        target_devices = db.query(models.Device).filter(models.Device.serial_number.in_(action.device_serials)).all()
+        # Verify all found (Strict mode? Or permissive? Let's be permissive and return only processed)
+    
+    elif action.num_carton:
+        target_devices = db.query(models.Device).filter(models.Device.num_carton == action.num_carton).all()
+        if not target_devices:
+             raise HTTPException(status_code=404, detail=f"No devices found in carton {action.num_carton}")
+    else:
+        raise HTTPException(status_code=400, detail="Must provide either device_serials or num_carton")
+
+    created_history = []
+    
+    # 2. Process each device
+    for device in target_devices:
+        # State Machine Logic (Inline reused or we could extract a service function)
+        # For simplicity, we apply the update logic directly here as it mirrors the single action
+        
+        # Apply Transitions (Simplified for Bulk - usually just Status/Aff updates)
+        if action.new_status:
+            device.current_status = action.new_status
+        # Specific logic for Reception (Magasin default)
+        if action.action_type == models.ActionType.RECEPTION:
+             device.current_status = models.DeviceStatus.EN_STOCK
+             device.affectation = models.TypeAffectation.MAGASIN
+        elif action.new_affectation:
+            device.affectation = action.new_affectation
+            
+        device.last_updated = datetime.utcnow()
+        
+        # Record History
+        history = models.History(
+            device_id=device.id,
+            action_type=action.action_type,
+            user_id=action.user_id,
+            details=action.details or f"Bulk Action: {action.action_type}",
+            timestamp=datetime.utcnow()
+        )
+        db.add(history)
+        created_history.append(history)
+    
+    db.commit()
+    # Refresh is expensive for bulk, we might skip it or just return the list
+    return created_history
+
