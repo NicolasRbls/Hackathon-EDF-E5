@@ -21,12 +21,66 @@ router = APIRouter(
     tags=["actions"]
 )
 
+from app import security
+
+def check_permissions(user: models.User, device: models.Device, action_type: models.ActionType):
+    if user.role == models.UserRole.ADMIN:
+        return True
+        
+    # Mapping UserRole to TypeAffectation strings
+    # TypeAffectation: "Magasin", "BO Nord", "BO Centre", "BO Sud", "Labo"
+    # UserRole: "magasin", "bo_nord", "bo_centre", "bo_sud", "labo"
+    
+    # 1. MAGASIN
+    if user.role == models.UserRole.MAGASIN:
+        # Can always RECEPTION (creates stock)
+        if action_type == models.ActionType.RECEPTION:
+            return True
+        # Can TRANSFERT if device is currently in MAGASIN
+        if action_type == models.ActionType.TRANSFERT and device.affectation == models.TypeAffectation.MAGASIN:
+            return True
+        return False
+        
+    # 2. BO (Regional)
+    # Define mapping
+    bo_map = {
+        models.UserRole.BO_NORD: models.TypeAffectation.BO_NORD,
+        models.UserRole.BO_CENTRE: models.TypeAffectation.BO_CENTRE,
+        models.UserRole.BO_SUD: models.TypeAffectation.BO_SUD
+    }
+    
+    if user.role in bo_map:
+        target_zone = bo_map[user.role]
+        # Must be IN the zone to act (Pose, Depose)
+        if device.affectation == target_zone:
+            return True
+        return False
+
+    # 3. LABO
+    if user.role == models.UserRole.LABO:
+        if device.affectation == models.TypeAffectation.LABO:
+            return True
+        return False
+        
+    return False
+
 @router.post("/", response_model=schemas.History)
-def create_action(action: schemas.ActionCreate, db: Session = Depends(get_db)):
+def create_action(
+    action: schemas.ActionCreate, 
+    current_user: models.User = Depends(security.get_current_active_user),
+    db: Session = Depends(get_db)
+):
     # 1. Verify device exists
     device = db.query(models.Device).filter(models.Device.serial_number == action.device_serial).first()
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
+
+    # 1.5 CHECK PERMISSONS
+    if not check_permissions(current_user, device, action.action_type):
+        raise HTTPException(
+            status_code=403, 
+            detail=f"Permission Denied: Role {current_user.role.value} cannot perform {action.action_type.value} on device in {device.affectation.value}"
+        )
 
     # 2. BUSINESS LOGIC & STATE MACHINE
     # We ignore 'new_status'/'new_affectation' from input (unless generic) and enforce rules
@@ -102,7 +156,7 @@ def create_action(action: schemas.ActionCreate, db: Session = Depends(get_db)):
     history_entry = models.History(
         device_id=device.id,
         action_type=action.action_type,
-        user_id=action.user_id,
+        user_id=current_user.username, # Enforce Real User
         details=action.details or f"Status: {device.current_status.value}, Aff: {device.affectation.value}",
         timestamp=datetime.utcnow()
     )

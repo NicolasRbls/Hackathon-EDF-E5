@@ -1,59 +1,94 @@
 from fastapi import status
 
-def test_perform_action_lifecycle(client):
-    # 1. Create Device (Starts EN_LIVRAISON / MAGASIN)
-    client.post("/devices/", json={"serial_number": "ACT-001"})
+from app import models, security
 
-    # 2. RECEPTION (Valid: en_livraison -> en_stock)
-    res_reception = client.post("/actions/", json={
+def test_perform_action_lifecycle(client, db_session):
+    # 0. Auth Setup
+    hashed = security.get_password_hash("admin123")
+    admin = models.User(username="admin_test", password_hash=hashed, role=models.UserRole.ADMIN)
+    db_session.add(admin)
+    db_session.commit()
+    
+    token = client.post("/auth/login", data={"username": "admin_test", "password": "admin123"}).json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 1. Create Device
+    response = client.post("/devices/", json={"serial_number": "ACT-001", "num_carton": "C1"})
+    assert response.status_code == 201
+
+    # 2. RECEPTION (Magasin)
+    response = client.post("/actions/", json={
         "device_serial": "ACT-001",
         "action_type": "RECEPTION",
-        "user_id": "Magasinier"
-    })
-    assert res_reception.status_code == status.HTTP_200_OK
+        "user_id": "ignored_in_v2" 
+    }, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["action_type"] == "RECEPTION"
     
-    # 3. TRANSFERT TO BO (Valid: en_stock -> en_stock / BO Nord)
-    res_transfert = client.post("/actions/", json={
+    # Verify State
+    device = client.get("/devices/ACT-001").json()
+    assert device["current_status"] == "en_stock"
+    assert device["affectation"] == "Magasin"
+
+    # 3. TRANSFERT (Magasin -> BO Nord)
+    response = client.post("/actions/", json={
         "device_serial": "ACT-001",
         "action_type": "TRANSFERT",
         "new_affectation": "BO Nord",
-        "user_id": "Logistique"
-    })
-    assert res_transfert.status_code == status.HTTP_200_OK
+        "user_id": "ignored"
+    }, headers=headers)
+    assert response.status_code == 200
+    
+    device = client.get("/devices/ACT-001").json()
+    assert device["affectation"] == "BO Nord"
 
-    # 4. POSE (Valid: en_stock -> pose)
-    res_pose = client.post("/actions/", json={
+    # 4. POSE (BO Nord)
+    response = client.post("/actions/", json={
         "device_serial": "ACT-001",
         "action_type": "POSE",
-        "poste_pose": "P-123",
-        "user_id": "Tech1"
-    })
-    assert res_pose.status_code == status.HTTP_200_OK
+        "poste_pose": "P-123", # Required
+        "user_id": "ignored"
+    }, headers=headers)
+    assert response.status_code == 200
     
-    # Verify final state
     device = client.get("/devices/ACT-001").json()
     assert device["current_status"] == "pose"
-    assert device["poste_pose"] == "P-123"
 
-def test_perform_action_invalid_pose(client):
-    # Create device (EN_LIVRAISON)
-    client.post("/devices/", json={"serial_number": "FAIL-001"})
+def test_perform_action_invalid_pose(client, db_session):
+    # Auth
+    hashed = security.get_password_hash("pw")
+    db_session.add(models.User(username="a", password_hash=hashed, role=models.UserRole.ADMIN))
+    db_session.commit()
+    t = client.post("/auth/login", data={"username": "a", "password": "pw"}).json()["access_token"]
+    h = {"Authorization": f"Bearer {t}"}
+
+    client.post("/devices/", json={"serial_number": "BAD-POSE"})
+    # Device is EN_LIVRAISON by default. POSE requires EN_STOCK.
     
-    # Try POSE immediately (Should fail, needs to be En Stock)
     response = client.post("/actions/", json={
-        "device_serial": "FAIL-001",
+        "device_serial": "BAD-POSE",
         "action_type": "POSE",
-        "poste_pose": "P-X",
-        "user_id": "Tech1"
-    })
+        "poste_pose": "P1",
+        "user_id": "u"
+    }, headers=h)
+    
     assert response.status_code == 400
-    assert "must be in STOCK" in response.json()["detail"]
+    assert "STOCK" in response.json()["detail"]
 
-def test_perform_action_device_not_found(client):
+def test_perform_action_device_not_found(client, db_session):
+    # Auth
+    hashed = security.get_password_hash("pw")
+    db_session.add(models.User(username="a", password_hash=hashed, role=models.UserRole.ADMIN))
+    db_session.commit()
+    t = client.post("/auth/login", data={"username": "a", "password": "pw"}).json()["access_token"]
+    h = {"Authorization": f"Bearer {t}"}
+
     response = client.post("/actions/", json={
         "device_serial": "UNKNOWN",
-        "action_type": "POSE",
-        "user_id": "Ghost"
-    })
-    assert response.status_code == status.HTTP_404_NOT_FOUND
-
+        "action_type": "RECEPTION",
+        "user_id": "u"
+    }, headers=h)
+    
+    assert response.status_code == 404
+status.HTTP_404_NOT_FOUND

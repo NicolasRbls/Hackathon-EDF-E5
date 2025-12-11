@@ -51,7 +51,9 @@ class Device(Base):
 class UserRole(str, enum.Enum):
     ADMIN = "admin"
     MAGASIN = "magasin"
-    BO = "bo" # Generic BO or split? User said "Profils" were explicit. Let's assume generic BO role accessing BO_NORD/SUD etc.
+    BO_NORD = "bo_nord"
+    BO_CENTRE = "bo_centre"
+    BO_SUD = "bo_sud"
     LABO = "labo"
     VIEWER = "viewer"
 
