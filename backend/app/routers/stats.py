@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_db
-from app import models, schemas
+from app import models, schemas, security
 from typing import List, Dict, Any
 
 router = APIRouter(
@@ -34,7 +34,14 @@ def get_stocks(db: Session = Depends(get_db)):
     return stats
 
 @router.get("/dashboard/history", response_model=List[schemas.History])
-def get_recent_history(limit: int = 10, db: Session = Depends(get_db)):
+def get_recent_history(
+    limit: int = 10, 
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(security.require_role([
+        models.UserRole.ADMIN, 
+        models.UserRole.VIEWER
+    ]))
+):
     """
     Returns the most recent actions relative to devices.
     """

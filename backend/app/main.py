@@ -22,6 +22,8 @@ app.include_router(auth.router)
 app.include_router(devices.router)
 app.include_router(actions.router)
 app.include_router(stats.router)
+from .routers import history
+app.include_router(history.router)
 
 @app.get("/")
 def read_root():

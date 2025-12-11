@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app import models, schemas
+from app import models, schemas, security
 from typing import List, Optional
 
 router = APIRouter(
@@ -54,7 +54,15 @@ def search_devices(
     return query.limit(100).all()
 
 @router.post("/", response_model=schemas.Device, status_code=status.HTTP_201_CREATED)
-def create_device(device: schemas.DeviceCreate, db: Session = Depends(get_db)):
+def create_device(
+    device: schemas.DeviceCreate, 
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(security.require_role([
+        models.UserRole.ADMIN, 
+        models.UserRole.MAGASIN, 
+        models.UserRole.LABO
+    ]))
+):
     # Check if device exists
     db_device = db.query(models.Device).filter(models.Device.serial_number == device.serial_number).first()
     if db_device:
@@ -89,3 +97,20 @@ def read_device(serial_number: str, db: Session = Depends(get_db)):
     if db_device is None:
         raise HTTPException(status_code=404, detail="Device not found")
     return db_device
+
+@router.get("/carton/{num_carton}")
+def get_carton_details(
+    num_carton: str, 
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(security.get_current_active_user)
+):
+    """
+    Get details of a specific carton and all devices contained within it.
+    """
+    devices = db.query(models.Device).filter(models.Device.num_carton == num_carton).all()
+    
+    return {
+        "num_carton": num_carton,
+        "count": len(devices),
+        "devices": devices
+    }
