@@ -1,5 +1,22 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center gap-3">
+  <div class="min-h-screen bg-zinc-900 text-white">
+    <!-- SIDEBAR -->
+    <Sidebar>
+      
+      <SidebarItem icon="Home" label="Home" :active="true" />
+      <SidebarItem icon="Inbox" label="Inbox" />
+      <SidebarItem icon="FileText" label="Documents" />
+      <SidebarItem icon="Calendar" label="Calendar" />
+
+      <SidebarGroup title="Favorites">
+        <SidebarItem label="Marketing site" />
+        <SidebarItem label="Android app" />
+        <SidebarItem label="Brand guidelines" />
+      </SidebarGroup>
+
+    </Sidebar>
+    <!-- Contenu à droite -->
+  <div class="flex-1 flex flex-col items-center justify-center gap-3 p-6 ml-10">
 
     <h1 class="text-5xl font-bold dark:text-white mb-2">
       EDF CPL
@@ -37,16 +54,20 @@
 
 
 
-    
+    </div>
   </div>
 </template>
 
 <script>
 import Icon from "../components/lucide/Icon.vue";
+import Sidebar from "../components/sidebar/Sidebar.vue";
+import SidebarItem from "../components/sidebar/item.vue";
+import SidebarGroup from "../components/sidebar/group.vue";
+import SidebarSpacer from "../components/sidebar/spacer.vue";
 
 export default {
   name: 'Home',
-  components: {Icon},
+  components: {Icon, Sidebar, SidebarItem, SidebarGroup, SidebarSpacer},
   methods: {
     navigateTo(path) {
       this.$router.push(path)
