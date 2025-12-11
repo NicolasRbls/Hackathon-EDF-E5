@@ -23,7 +23,19 @@ def test_search_devices(client):
     assert len(res.json()) == 1
     assert res.json()[0]["serial_number"] == "S3"
 
-def test_bulk_actions(client):
+from app import security, models
+
+def test_bulk_actions(client, db_session):
+    # 0. Setup Admin for Auth
+    hashed = security.get_password_hash("admin123")
+    admin = models.User(username="admin_bulk", password_hash=hashed, role=models.UserRole.ADMIN)
+    db_session.add(admin)
+    db_session.commit()
+    
+    login = client.post("/auth/login", data={"username": "admin_bulk", "password": "admin123"})
+    token = login.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
     # Setup: 2 devices in Carton C-BULK
     client.post("/devices/", json={"serial_number": "B1", "num_carton": "C-BULK"})
     client.post("/devices/", json={"serial_number": "B2", "num_carton": "C-BULK"})
@@ -33,7 +45,7 @@ def test_bulk_actions(client):
         "action_type": "RECEPTION",
         "num_carton": "C-BULK",
         "user_id": "BulkUser"
-    })
+    }, headers=headers)
     
     assert response.status_code == 200
     history = response.json()

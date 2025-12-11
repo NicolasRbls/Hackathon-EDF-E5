@@ -119,8 +119,14 @@ def create_action(action: schemas.ActionCreate, db: Session = Depends(get_db)):
         user_id=history_entry.user_id,
         details=history_entry.details
     )
+from app import security
+
 @router.post("/bulk", response_model=List[schemas.History])
-def bulk_create_action(action: schemas.BulkActionCreate, db: Session = Depends(get_db)):
+def bulk_create_action(
+    action: schemas.BulkActionCreate, 
+    current_user: models.User = Depends(security.require_role([models.UserRole.ADMIN, models.UserRole.MAGASIN])),
+    db: Session = Depends(get_db)
+):
     """
     Perform an action on multiple devices at once.
     Target by list of Serials OR by Key (Carton Number).

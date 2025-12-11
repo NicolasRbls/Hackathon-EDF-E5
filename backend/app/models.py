@@ -48,6 +48,21 @@ class Device(Base):
     # Relationships
     history = relationship("History", back_populates="device", cascade="all, delete-orphan")
 
+class UserRole(str, enum.Enum):
+    ADMIN = "admin"
+    MAGASIN = "magasin"
+    BO = "bo" # Generic BO or split? User said "Profils" were explicit. Let's assume generic BO role accessing BO_NORD/SUD etc.
+    LABO = "labo"
+    VIEWER = "viewer"
+
+class User(Base):
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    password_hash = Column(String, nullable=False)
+    username = Column(String, unique=True, index=True)
+    role = Column(Enum(UserRole), default=UserRole.VIEWER)
+
 class History(Base):
     __tablename__ = "history"
 
@@ -57,7 +72,8 @@ class History(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
     
     # Context of the action
-    user_id = Column(String, nullable=True)  # Who performed the action
+    user_id = Column(String, nullable=True)  # Who performed the action (Legacy or Link to User?)
+    # ideally we link to User.id but to keep history fast/simple and supporting legacy imports, we keep String for now.
     details = Column(String, nullable=True)  # Extra info (e.g., "From Magasin to BO Nord")
     
     device = relationship("Device", back_populates="history")

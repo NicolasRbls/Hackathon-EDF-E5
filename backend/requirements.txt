@@ -16,6 +16,10 @@ psycopg2-binary==2.9.11
 pydantic==2.12.5
 pydantic_core==2.41.5
 Pygments==2.19.2
+passlib[bcrypt]
+bcrypt==4.0.1
+python-jose[cryptography]==1.2.1
+python-multipart
 pytest==9.0.2
 python-dotenv==1.2.1
 SQLAlchemy==2.0.45

@@ -53,3 +53,23 @@ class History(BaseModel):
     details: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+from .models import UserRole
+
+class UserBase(BaseModel):
+    username: str
+    role: UserRole = UserRole.VIEWER
+
+class UserCreate(UserBase):
+    password: str
+
+class UserResponse(UserBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
