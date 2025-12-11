@@ -3,17 +3,16 @@ import { computed } from 'vue';
 import * as icons from "lucide-vue-next";
 
 const props = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
+  name: { type: String, required: true },
   size: Number,
   color: String,
   strokeWidth: Number,
   defaultClass: String
-})
+});
 
-const icon = computed(() => icons[props.name]);
+const toPascalCase = str => str.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('');
+
+const icon = computed(() => icons[toPascalCase(props.name)]);
 </script>
 
 <template>
@@ -21,6 +20,7 @@ const icon = computed(() => icons[props.name]);
     :is="icon"
     :size="size"
     :color="color"
-    :stroke-width="strokeWidth" :default-class="defaultClass"
+    :stroke-width="strokeWidth"
+    :class="defaultClass"
   />
 </template>
