@@ -35,3 +35,8 @@ def test_auth_full_cycle(client, db_session):
         "role": "admin"
     }, headers=headers_mag)
     assert res_fail.status_code == 403
+
+def test_logout(client):
+    res = client.post("/auth/logout")
+    assert res.status_code == 200
+    assert res.json() == {"message": "Successfully logged out"}
