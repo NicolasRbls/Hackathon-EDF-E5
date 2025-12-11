@@ -6,8 +6,8 @@
         <Icon name="ArrowLeft" class="pr-2"/>
         Retour
       </button>
-      <h1 class="text-4xl font-bold text-edf-dark">
-        Interface <span class="text-edf-orange">Technicien</span>
+      <h1 class="text-4xl font-bold">
+        Interface <span class="text-orange-500">Magasin</span>
       </h1>
     </div>
     <!--todo rajouter une liste des trucs qu'on peu faire en tant que technicien-->

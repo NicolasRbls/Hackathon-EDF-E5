@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Index from '../views/Index.vue'
-import StaffDashboard from '../views/staff/dashboard/Pages/DashboardPage.vue'
-import ManagerDashboard from '../views/manager/dashboard/Pages/DashboardPage.vue'
+import BoDashboard from '../views/bo/dashboard/Pages/DashboardPage.vue'
+import MagasinDashboard from '../views/magasin/dashboard/Pages/DashboardPage.vue'
+import LaboDashboard from '../views/labo/dashboard/Pages/DashboardPage.vue'
+import AdminDashboard from '../views/admin/dahboard/Pages/DashboardPage.vue'
+import dashboardDashboard from '../views/dashboard/dashboard/Pages/DashboardPage.vue'
 
 const routes = [
   {
@@ -10,15 +13,38 @@ const routes = [
     component: Index
   },
   {
-    path: '/staff',
-    name: 'StaffDashboard',
-    component: StaffDashboard
+    path: '/bo',
+    name: 'bo-index',
+    component: BoDashboard
   },
   {
-    path: '/manager',
-    name: 'ManagerDashboard',
-    component: ManagerDashboard
+    path: '/magasin',
+    name: 'magasin-index',
+    component: MagasinDashboard
+  },
+
+  {
+    path: '/labo',
+    name: 'labo-index',
+    component: LaboDashboard
+  },
+
+
+  {
+    path: '/admin',
+    name: 'admin-index',
+    component: AdminDashboard
+  }, 
+
+
+  {
+    path: '/dashboard',
+    name: 'dashboard-index',
+    component: dashboardDashboard
   }
+
+
+  
 ]
 
 const router = createRouter({
