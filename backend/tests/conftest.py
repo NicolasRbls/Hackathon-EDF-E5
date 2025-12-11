@@ -39,3 +39,20 @@ def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+from app import models, security
+
+@pytest.fixture(scope="function")
+def admin_token(client, db_session):
+    """Create a default admin and return auth headers."""
+    # Ensure admin exists
+    password = "admin_test_pw"
+    hashed = security.get_password_hash(password)
+    user = models.User(username="admin_test", password_hash=hashed, role=models.UserRole.ADMIN)
+    db_session.add(user)
+    db_session.commit()
+    
+    # Login
+    response = client.post("/auth/login", data={"username": "admin_test", "password": password})
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}

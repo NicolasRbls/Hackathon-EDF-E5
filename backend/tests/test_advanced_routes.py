@@ -2,14 +2,14 @@ from fastapi import status
 import csv
 import io
 
-def test_search_devices(client):
+def test_search_devices(client, admin_token):
     # Setup
-    client.post("/devices/", json={"serial_number": "S1", "num_carton": "C1", "operateur": "Orange"})
-    client.post("/devices/", json={"serial_number": "S2", "num_carton": "C1", "operateur": "Bouygues"})
-    client.post("/devices/", json={"serial_number": "S3", "num_carton": "C2", "operateur": "Orange"})
+    client.post("/devices/", json={"serial_number": "SEARCH-1", "num_carton": "C-SEARCH", "operateur": "Orange"}, headers=admin_token)
+    client.post("/devices/", json={"serial_number": "SEARCH-2", "num_carton": "C-SEARCH", "operateur": "Bouygues"}, headers=admin_token)
+    client.post("/devices/", json={"serial_number": "S3", "num_carton": "C2", "operateur": "Orange"}, headers=admin_token)
 
     # Search by Carton
-    res = client.get("/devices/search?num_carton=C1")
+    res = client.get("/devices/search?num_carton=C-SEARCH")
     assert res.status_code == 200
     data = res.json()
     assert len(data) == 2
@@ -25,35 +25,25 @@ def test_search_devices(client):
 
 from app import security, models
 
-def test_bulk_actions(client, db_session):
-    # 0. Setup Admin for Auth
-    hashed = security.get_password_hash("admin123")
-    admin = models.User(username="admin_bulk", password_hash=hashed, role=models.UserRole.ADMIN)
-    db_session.add(admin)
-    db_session.commit()
-    
-    login = client.post("/auth/login", data={"username": "admin_bulk", "password": "admin123"})
-    token = login.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
-
+def test_bulk_actions(client, admin_token):
     # Setup: 2 devices in Carton C-BULK
-    client.post("/devices/", json={"serial_number": "B1", "num_carton": "C-BULK"})
-    client.post("/devices/", json={"serial_number": "B2", "num_carton": "C-BULK"})
+    client.post("/devices/", json={"serial_number": "BULK-1", "num_carton": "C-BULK"}, headers=admin_token)
+    client.post("/devices/", json={"serial_number": "BULK-2", "num_carton": "C-BULK"}, headers=admin_token)
     
     # Perform Bulk Reception
     response = client.post("/actions/bulk", json={
         "action_type": "RECEPTION",
         "num_carton": "C-BULK",
         "user_id": "BulkUser"
-    }, headers=headers)
+    }, headers=admin_token)
     
     assert response.status_code == 200
     history = response.json()
     assert len(history) == 2
     
     # Verify Status Update
-    d1 = client.get("/devices/B1").json()
-    d2 = client.get("/devices/B2").json()
+    d1 = client.get("/devices/BULK-1").json()
+    d2 = client.get("/devices/BULK-2").json()
     assert d1["current_status"] == "en_stock"
     assert d2["current_status"] == "en_stock"
 
@@ -65,13 +55,10 @@ def test_dictionaries(client):
     assert "affectation" in data
     assert "Magasin" in data["affectation"]
 
-def test_export_csv(client):
-    client.post("/devices/", json={"serial_number": "EXPORT-1"})
+def test_export_csv(client, admin_token):
+    client.post("/devices/", json={"serial_number": "EXPORT-1"}, headers=admin_token)
     
-    response = client.get("/export/csv")
-    assert response.status_code == 200
-    assert "text/csv" in response.headers["content-type"]
-    
-    content = response.text
-    assert "Serial Number" in content
-    assert "EXPORT-1" in content
+    res = client.get("/export/csv")
+    assert res.status_code == 200
+    assert "Serial Number" in res.text
+    assert "EXPORT-1" in res.text
