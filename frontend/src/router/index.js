@@ -8,6 +8,7 @@ import MagasinDashboard from '../views/magasin/dashboard/Pages/DashboardPage.vue
 import LaboDashboard from '../views/labo/dashboard/Pages/DashboardPage.vue'
 import AdminDashboard from '../views/admin/dahboard/Pages/DashboardPage.vue'
 import dashboardDashboard from '../views/dashboard/dashboard/Pages/DashboardPage.vue'
+import ScanPage from "../views/magasin/scan/Pages/ScanPage.vue"
 
 const routes = [
   {
@@ -49,6 +50,13 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard-index',
     component: dashboardDashboard,
+    meta: { requiresAuth: true }
+  },
+  
+  {
+    path: '/magasin/scan',
+    name: 'scan-index',
+    component: ScanPage,
     meta: { requiresAuth: true }
   }
 ]
