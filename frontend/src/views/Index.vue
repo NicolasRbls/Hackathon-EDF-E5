@@ -6,17 +6,38 @@
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
-      <div class="card aspect-video grid items-center" @click="navigateTo('/staff')">
+
+      <div class="card aspect-video grid items-center" @click="navigateTo('/bo')">
           <Icon name="Briefcase" size="64" class="m-auto"/>
-          <h2 class="text-center text-2xl">Vous êtes Technicien</h2>
+          <h2 class="text-center text-2xl">BO</h2>
+      </div>
+
+
+      <div class="card aspect-video grid items-center" @click="navigateTo('/magasin')">
+          <Icon name="Briefcase" size="64" class="m-auto"/>
+          <h2 class="text-center text-2xl">Magasin</h2>
       </div>
 
 
       <div class="card aspect-video grid items-center" @click="navigateTo('/manager')">
           <Icon name="Briefcase" size="64" class="m-auto"/>
-          <h2 class="text-center text-2xl">Vous êtes Manager</h2>
+          <h2 class="text-center text-2xl">Labo</h2>
+      </div>
+
+      <div class="card aspect-video grid items-center" @click="navigateTo('/manager')">
+          <Icon name="Briefcase" size="64" class="m-auto"/>
+          <h2 class="text-center text-2xl">Admin</h2>
+      </div>
+
+      <div class="card aspect-video grid items-center justify-center md:col-span-2" @click="navigateTo('/manager')">
+          <Icon name="Briefcase" size="64" class="m-auto"/>
+          <h2 class="text-center text-2xl">Dashboard</h2>
       </div>
     </div>
+
+
+
+    
   </div>
 </template>
 

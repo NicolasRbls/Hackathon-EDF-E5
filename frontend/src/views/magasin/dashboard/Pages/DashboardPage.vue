@@ -7,7 +7,7 @@
         Retour
       </button>
       <h1 class="text-4xl font-bold text-edf-dark">
-        Interface <span class="text-edf-orange">Technicien</span>
+        Interface <span class="text-edf-orange">Magasin</span>
       </h1>
     </div>
     <!--todo rajouter une liste des trucs qu'on peu faire en tant que technicien-->
