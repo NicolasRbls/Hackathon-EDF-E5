@@ -1,503 +1,337 @@
-<template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <button
-          @click="$router.push('/')"
-          class="mb-4 flex items-center text-white hover:text-emerald-100 transition-colors"
-        >
-          <Icon name="ArrowLeft" class="pr-2" />
-          Retour
-        </button>
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-4xl font-bold text-white">
-              Dashboard Magasin
-            </h1>
-            <p class="text-emerald-100 mt-2">Gestion d'inventaire et actions terrain</p>
+﻿<template>
+  <div class="p-6 space-y-6">
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Tableau de Bord Magasin</h1>
+
+    <!-- Quick Actions Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Réception -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow cursor-pointer hover:shadow-md transition" @click="openModal('reception')">
+        <div class="flex items-center space-x-4">
+          <div class="p-3 bg-green-100 text-green-600 rounded-full">
+            <Icon name="package-plus" size="24" />
           </div>
-          <Icon name="warehouse" :size="48" class="text-white opacity-50" />
+          <div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Réception</h3>
+            <p class="text-sm text-gray-500">Ajout Capteur/Carton</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transfert -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow cursor-pointer hover:shadow-md transition" @click="openModal('transfert')">
+        <div class="flex items-center space-x-4">
+          <div class="p-3 bg-blue-100 text-blue-600 rounded-full">
+            <Icon name="arrow-right-left" size="24" />
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Transfert</h3>
+            <p class="text-sm text-gray-500">Déplacer un Carton</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scanner -->
+      <router-link :to="{ name: 'scan-index' }" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow cursor-pointer hover:shadow-md transition block">
+        <div class="flex items-center space-x-4">
+          <div class="p-3 bg-purple-100 text-purple-600 rounded-full">
+            <Icon name="scan" size="24" />
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Scanner</h3>
+            <p class="text-sm text-gray-500">Info Capteur</p>
+          </div>
+        </div>
+      </router-link>
+
+      <!-- Export CSV -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow cursor-pointer hover:shadow-md transition" @click="openModal('export')">
+        <div class="flex items-center space-x-4">
+          <div class="p-3 bg-orange-100 text-orange-600 rounded-full">
+            <Icon name="file-spreadsheet" size="24" />
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Export CSV</h3>
+            <p class="text-sm text-gray-500">Historique</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Loading State -->
-      <div v-if="loading" class="flex items-center justify-center h-64">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+    <!-- Modals -->
+    <!-- Réception Modal -->
+    <div v-if="modals.reception" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Réception Matériel</h3>
+        <p class="mb-4 text-sm text-gray-600">Entrez le code (k... pour capteur, c... pour carton)</p>
+        <input v-model="forms.reception.code" @keyup.enter="handleReception" type="text" placeholder="Ex: k123456 ou c987" class="w-full border p-2 rounded mb-4" autofocus>
+        
+        <div class="flex justify-end space-x-2">
+          <button @click="closeModals" class="px-4 py-2 border rounded hover:bg-gray-100">Annuler</button>
+          <button @click="handleReception" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Valider</button>
+        </div>
       </div>
+    </div>
 
-      <!-- Dashboard Content -->
-      <div v-else>
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            label="En Stock"
-            :value="magasinStats.en_stock"
-            icon="package"
-            iconBgColor="bg-emerald-100 dark:bg-emerald-900"
-            iconColor="text-emerald-600 dark:text-emerald-400"
-          />
-          <StatCard
-            label="En Livraison"
-            :value="magasinStats.en_livraison"
-            icon="truck"
-            iconBgColor="bg-blue-100 dark:bg-blue-900"
-            iconColor="text-blue-600 dark:text-blue-400"
-          />
-          <StatCard
-            label="Réceptions ce mois"
-            :value="receptionsMois"
-            icon="inbox"
-            iconBgColor="bg-purple-100 dark:bg-purple-900"
-            iconColor="text-purple-600 dark:text-purple-400"
-          />
-          <StatCard
-            label="Transferts ce mois"
-            :value="transfertsMois"
-            icon="repeat"
-            iconBgColor="bg-orange-100 dark:bg-orange-900"
-            iconColor="text-orange-600 dark:text-orange-400"
-          />
+    <!-- Transfert Modal -->
+    <div v-if="modals.transfert" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Transfert Carton</h3>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Numéro Carton</label>
+          <input v-model="forms.transfert.num_carton" type="text" class="w-full border p-2 rounded">
         </div>
-
-        <!-- Quick Actions Panel -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700 mb-8">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <Icon name="zap" class="mr-2" />
-            Actions Rapides
-          </h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button class="flex flex-col items-center justify-center p-6 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors border-2 border-emerald-200 dark:border-emerald-800">
-              <Icon name="inbox" :size="32" class="text-emerald-600 dark:text-emerald-400 mb-2" />
-              <span class="text-sm font-medium text-gray-900 dark:text-white">Réception</span>
-            </button>
-            <button class="flex flex-col items-center justify-center p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors border-2 border-blue-200 dark:border-blue-800">
-              <Icon name="repeat" :size="32" class="text-blue-600 dark:text-blue-400 mb-2" />
-              <span class="text-sm font-medium text-gray-900 dark:text-white">Transfert</span>
-            </button>
-            <button class="flex flex-col items-center justify-center p-6 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors border-2 border-purple-200 dark:border-purple-800">
-              <Icon name="scan" :size="32" class="text-purple-600 dark:text-purple-400 mb-2" />
-              <span class="text-sm font-medium text-gray-900 dark:text-white">Scanner</span>
-            </button>
-            <button class="flex flex-col items-center justify-center p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors border-2 border-orange-200 dark:border-orange-800">
-              <Icon name="file-down" :size="32" class="text-orange-600 dark:text-orange-400 mb-2" />
-              <span class="text-sm font-medium text-gray-900 dark:text-white">Export CSV</span>
-            </button>
-          </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Nouvelle Affectation</label>
+            <select v-model="forms.transfert.affectation" class="w-full border rounded p-2">
+                <option value="Magasin">Magasin</option>
+                <option value="BO Nord">BO Nord</option>
+                <option value="BO Centre">BO Centre</option>
+                <option value="BO Sud">BO Sud</option>
+                <option value="Labo">Labo</option>
+            </select>
         </div>
+        <div class="flex justify-end space-x-2">
+          <button @click="closeModals" class="px-4 py-2 border rounded hover:bg-gray-100">Annuler</button>
+          <button @click="handleTransfert" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Transférer</button>
+        </div>
+      </div>
+    </div>
 
-        <!-- Main Charts -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <!-- Stock Status -->
-          <ChartCard
-            title="État du Stock"
-            :option="stockStatusOption"
-            height="400px"
-          />
+    <!-- Export Modal -->
+    <div v-if="modals.export" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Export CSV</h3>
+        <p class="mb-4 text-sm text-gray-600">Exporter l\'historique des actions.</p>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Nombre de lignes limite</label>
+            <input v-model.number="forms.export.limit" type="number" class="w-full border p-2 rounded">
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button @click="closeModals" class="px-4 py-2 border rounded hover:bg-gray-100">Annuler</button>
+          <button @click="handleExport" class="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">Exporter</button>
+        </div>
+      </div>
+    </div>
 
-          <!-- Stock Movement Trend -->
+    <!-- KPI Cards (Existing) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <StatCard
+        title="Total Stocks"
+        :value="totalStocks"
+        icon="package"
+        color="bg-blue-500"
+      />
+      <StatCard
+        title="Cartons"
+        :value="stats.cartons_count || 0"
+        icon="box"
+        color="bg-green-500"
+      />
+      <StatCard
+        title="En Attente"
+        :value="stats.pending_transfer || 0"
+        icon="clock"
+        color="bg-yellow-500"
+      />
+       <StatCard
+        title="Alertes"
+        :value="stats.alerts || 0"
+        icon="alert-triangle"
+        color="bg-red-500"
+      />
+    </div>
+
+    <!-- Charts will go here (keeping existing structure implies passing existing chart options if any) -->
+     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8" v-if="!loading">   
+          <!-- Stock Movement -->
           <ChartCard
             title="Mouvements de Stock"
             :option="stockMovementOption"
-            height="400px"
-          />
-        </div>
-
-        <!-- Inventory Details -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <!-- Inventory by Status -->
-          <ChartCard
-            title="Inventaire par Statut"
-            :option="inventoryByStatusOption"
-            height="300px"
+            height="350px"
           />
 
           <!-- Delivery Progress -->
           <ChartCard
             title="Progression des Livraisons"
             :option="deliveryProgressOption"
-            height="300px"
+            height="350px"
           />
-
-          <!-- Monthly Activity -->
-          <ChartCard
-            title="Activité Mensuelle"
-            :option="monthlyActivityOption"
-            height="300px"
-          />
-        </div>
-
-        <!-- Recent Movements -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <Icon name="list" class="mr-2" />
-              Mouvements Récents
-            </h3>
-            <button class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
-              Voir tout
-            </button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead class="bg-gray-50 dark:bg-gray-900">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Équipement
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Destination
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Technicien
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                <tr v-for="movement in recentMovements" :key="movement.id" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span :class="getActionBadgeClass(movement.action_type)" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                      {{ movement.action_type }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300">
-                    #{{ movement.device_id }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                    {{ movement.destination || '-' }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                    {{ movement.user_id || 'N/A' }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {{ formatDate(movement.timestamp) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import Icon from "../../../../components/lucide/Icon.vue";
+import { ref, onMounted, computed, reactive } from 'vue';
 import StatCard from "../../../../components/dashboard/StatCard.vue";
 import ChartCard from "../../../../components/dashboard/ChartCard.vue";
-import { statsService, historyService } from "../../../../services/api.js";
+import Icon from "../../../../components/lucide/Icon.vue";
+import { statsService, deviceService, actionService, historyService } from "../../../../services/api.js";
 
 // State
 const loading = ref(true);
-const stocksData = ref({});
-const recentMovements = ref([]);
-
-// Computed Stats
-const magasinStats = computed(() => {
-  const magasinData = stocksData.value['Magasin'] || {};
-  return {
-    en_stock: magasinData.en_stock || 0,
-    en_livraison: magasinData.en_livraison || 0,
-    total: Object.values(magasinData).reduce((sum, count) => sum + count, 0)
-  };
+const stats = ref({});
+const modals = reactive({ reception: false, transfert: false, export: false });
+const forms = reactive({
+    reception: { code: '' },
+    transfert: { num_carton: '', affectation: 'BO Nord' },
+    export: { limit: 100 }
 });
 
-const receptionsMois = computed(() => {
-  return recentMovements.value.filter(m => m.action_type === 'RECEPTION').length;
-});
-
-const transfertsMois = computed(() => {
-  return recentMovements.value.filter(m => m.action_type === 'TRANSFERT').length;
-});
-
-// Chart Options
-const stockStatusOption = computed(() => ({
-  tooltip: {
-    trigger: 'item',
-    formatter: '{b}: {c} ({d}%)'
-  },
-  legend: {
-    orient: 'vertical',
-    left: 'left',
-    textStyle: { color: '#666' }
-  },
-  series: [
-    {
-      name: 'Stock',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      itemStyle: {
-        borderRadius: 10,
-        borderColor: '#fff',
-        borderWidth: 2
-      },
-      label: {
-        show: true,
-        formatter: '{b}: {c}'
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 16,
-          fontWeight: 'bold'
-        }
-      },
-      data: [
-        { value: magasinStats.value.en_stock, name: 'En Stock', itemStyle: { color: '#10b981' } },
-        { value: magasinStats.value.en_livraison, name: 'En Livraison', itemStyle: { color: '#3b82f6' } }
-      ].filter(item => item.value > 0)
-    }
-  ]
-}));
-
+// Mock/Real Chart Options
 const stockMovementOption = computed(() => ({
-  tooltip: {
-    trigger: 'axis'
-  },
-  legend: {
-    data: ['Réceptions', 'Transferts', 'Poses'],
-    textStyle: { color: '#666' }
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    data: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-    axisLabel: { color: '#666' }
-  },
-  yAxis: {
-    type: 'value',
-    axisLabel: { color: '#666' }
-  },
-  series: [
-    {
-      name: 'Réceptions',
-      type: 'line',
-      smooth: true,
-      data: [15, 12, 18, 22, 16, 8, 5],
-      itemStyle: { color: '#10b981' },
-      areaStyle: { opacity: 0.3 }
-    },
-    {
-      name: 'Transferts',
-      type: 'line',
-      smooth: true,
-      data: [8, 10, 12, 15, 18, 14, 9],
-      itemStyle: { color: '#3b82f6' },
-      areaStyle: { opacity: 0.3 }
-    },
-    {
-      name: 'Poses',
-      type: 'line',
-      smooth: true,
-      data: [5, 8, 10, 12, 14, 16, 12],
-      itemStyle: { color: '#f97316' },
-      areaStyle: { opacity: 0.3 }
-    }
-  ]
+    title: { text: 'Mouvements (Simulé)' },
+    xAxis: { type: 'category', data: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'] },
+    yAxis: { type: 'value' },
+    series: [{ data: [120, 200, 150, 80, 70], type: 'bar', itemStyle: { color: '#3b82f6' } }]
 }));
-
-const inventoryByStatusOption = computed(() => {
-  const magasinData = stocksData.value['Magasin'] || {};
-
-  return {
-    tooltip: {
-      trigger: 'item'
-    },
-    series: [
-      {
-        name: 'Statut',
-        type: 'pie',
-        radius: '70%',
-        data: [
-          { value: magasinData.en_stock || 0, name: 'En Stock', itemStyle: { color: '#10b981' } },
-          { value: magasinData.en_livraison || 0, name: 'En Livraison', itemStyle: { color: '#3b82f6' } },
-          { value: magasinData.pose || 0, name: 'Posé', itemStyle: { color: '#f97316' } },
-          { value: magasinData.a_tester || 0, name: 'À Tester', itemStyle: { color: '#eab308' } }
-        ].filter(item => item.value > 0),
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  };
-});
 
 const deliveryProgressOption = computed(() => ({
-  series: [
-    {
-      type: 'gauge',
-      startAngle: 180,
-      endAngle: 0,
-      min: 0,
-      max: 100,
-      splitNumber: 8,
-      axisLine: {
-        lineStyle: {
-          width: 6,
-          color: [
-            [0.3, '#ef4444'],
-            [0.7, '#eab308'],
-            [1, '#10b981']
-          ]
-        }
-      },
-      pointer: {
-        icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
-        length: '12%',
-        width: 20,
-        offsetCenter: [0, '-60%'],
-        itemStyle: {
-          color: 'auto'
-        }
-      },
-      axisTick: {
-        length: 12,
-        lineStyle: {
-          color: 'auto',
-          width: 2
-        }
-      },
-      splitLine: {
-        length: 20,
-        lineStyle: {
-          color: 'auto',
-          width: 5
-        }
-      },
-      axisLabel: {
-        color: '#464646',
-        fontSize: 10,
-        distance: -60
-      },
-      title: {
-        offsetCenter: [0, '-20%'],
-        fontSize: 12,
-        color: '#666'
-      },
-      detail: {
-        fontSize: 24,
-        offsetCenter: [0, '0%'],
-        valueAnimation: true,
-        formatter: '{value}%',
-        color: 'auto'
-      },
-      data: [
-        {
-          value: 78,
-          name: 'Livraisons'
-        }
-      ]
-    }
-  ]
+    series: [{
+        type: 'gauge',
+        progress: { show: true },
+        detail: { formatter: '{value}%' },
+        data: [{ value: 75, name: 'Complété' }]
+    }]
 }));
 
-const monthlyActivityOption = computed(() => ({
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: { type: 'shadow' }
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: {
-    type: 'category',
-    data: ['S1', 'S2', 'S3', 'S4'],
-    axisLabel: { color: '#666' }
-  },
-  yAxis: {
-    type: 'value',
-    axisLabel: { color: '#666' }
-  },
-  series: [
-    {
-      name: 'Actions',
-      type: 'bar',
-      data: [82, 95, 108, 112],
-      itemStyle: {
-        color: '#10b981',
-        borderRadius: [8, 8, 0, 0]
-      },
-      emphasis: {
-        itemStyle: {
-          color: '#059669'
-        }
-      }
-    }
-  ]
-}));
+const totalStocks = computed(() => {
+    return (stats.value.en_stock || 0) + (stats.value.en_livraison || 0);
+});
 
-// Methods
+// Actions
+const openModal = (name) => {
+    Object.keys(modals).forEach(k => modals[k] = false);
+    modals[name] = true;
+};
+
+const closeModals = () => {
+    Object.keys(modals).forEach(k => modals[k] = false);
+    forms.reception.code = '';
+    forms.transfert.num_carton = '';
+};
+
+const handleReception = async () => {
+    const code = forms.reception.code.trim();
+    if (!code) return;
+    
+    try {
+        if (code.toLowerCase().startsWith('k')) {
+            // Sensor logic
+            const payload = {
+                serial_number: code,
+                current_status: 'en_stock',
+                affectation: 'Magasin',
+                last_updated: new Date().toISOString()
+            };
+            await deviceService.createDevice(payload);
+            alert(`Capteur ${code} ajouté au stock.`);
+        } else if (code.toLowerCase().startsWith('c')) {
+             const payload = {
+                serial_number: `PREFIX-${code}`, 
+                num_carton: code,
+                current_status: 'en_stock',
+                affectation: 'Magasin',
+                last_updated: new Date().toISOString()
+            };
+            await deviceService.createDevice(payload);
+            alert(`Carton ${code} enregistré (Simulation).`);
+        } else {
+            alert('Format invalide. Utilisez k... pour capteur ou c... pour carton.');
+            return;
+        }
+        closeModals();
+        fetchData();
+    } catch (e) {
+        console.error(e);
+        alert('Erreur lors de la réception');
+    }
+};
+
+const handleTransfert = async () => {
+    if (!forms.transfert.num_carton) return;
+    try {
+        const res = await deviceService.search({ num_carton: forms.transfert.num_carton });
+        const devices = res.data;
+        
+        if (devices.length === 0) {
+            alert('Aucun appareil trouvé dans ce carton.');
+            return;
+        }
+
+        const promises = devices.map(d => actionService.createAction({
+            device_serial: d.serial_number,
+            action_type: 'TRANSFERT',
+            user_id: 'current_user', 
+            new_affectation: forms.transfert.affectation,
+            details: `Transfert Carton ${forms.transfert.num_carton}`
+        }));
+
+        await Promise.all(promises);
+        alert(`${devices.length} appareils transférés vers ${forms.transfert.affectation}`);
+        closeModals();
+        fetchData();
+    } catch (e) {
+         console.error(e);
+         alert('Erreur transfert');
+    }
+};
+
+const handleExport = async () => {
+    try {
+        const res = await historyService.searchHistory({ limit: forms.export.limit });
+        const data = res.data;
+        
+        if (!data || data.length === 0) {
+             alert('Aucune donnée à exporter.');
+             return;
+        }
+
+        // Convert to CSV
+        const headers = ['Date', 'Action', 'Utilisateur', 'Appareil', 'Details'];
+        const rows = data.map(row => [
+            row.timestamp,
+            row.action_type,
+            row.user_id,
+            row.device_id,
+            `"${(row.details || '').replace(/"/g, '""')}"`
+        ]);
+
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(r => r.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', `export_magasin_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        closeModals();
+    } catch (e) {
+         console.error(e);
+         alert('Erreur export');
+    }
+};
+
 const fetchData = async () => {
-  try {
-    loading.value = true;
-
-    const [stocksResponse, historyResponse] = await Promise.all([
-      statsService.getStocks(),
-      historyService.searchHistory({ role: 'magasin', limit: 20 })
-    ]);
-
-    stocksData.value = stocksResponse.data;
-    recentMovements.value = historyResponse.data.map(item => ({
-      ...item,
-      destination: ['BO Nord', 'BO Centre', 'BO Sud', 'Labo'][Math.floor(Math.random() * 4)]
-    }));
-  } catch (error) {
-    console.error('Erreur lors du chargement des données:', error);
-  } finally {
-    loading.value = false;
-  }
+    try {
+        const res = await statsService.getStocks();
+        stats.value = res.data || {};
+    } catch (e) {
+        console.error(e);
+    } finally {
+        loading.value = false;
+    }
 };
 
-const getActionBadgeClass = (actionType) => {
-  const classes = {
-    'RECEPTION': 'bg-emerald-100 text-emerald-800',
-    'POSE': 'bg-orange-100 text-orange-800',
-    'DEPOSE': 'bg-red-100 text-red-800',
-    'TRANSFERT': 'bg-blue-100 text-blue-800',
-    'TEST': 'bg-yellow-100 text-yellow-800',
-    'AUTRE': 'bg-gray-100 text-gray-800'
-  };
-  return classes[actionType] || 'bg-gray-100 text-gray-800';
-};
-
-const formatDate = (timestamp) => {
-  const date = new Date(timestamp);
-  return new Intl.DateTimeFormat('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(date);
-};
-
-// Lifecycle
 onMounted(() => {
-  fetchData();
+    fetchData();
 });
 </script>
+
+<style scoped>
+/* Quick Actions Hover Effects */
+</style>

@@ -4,14 +4,13 @@ import * as icons from "lucide-vue-next";
 
 const props = defineProps({
   name: { type: String, required: true },
-  size: Number,
+  size: [Number, String],
   color: String,
   strokeWidth: Number,
   defaultClass: String
 });
 
 const toPascalCase = str => str.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('');
-
 const icon = computed(() => icons[toPascalCase(props.name)]);
 </script>
 

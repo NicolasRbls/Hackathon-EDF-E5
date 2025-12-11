@@ -6,9 +6,15 @@ import LoginView from '../views/auth/LoginView.vue'
 import BoDashboard from '../views/bo/dashboard/Pages/DashboardPage.vue'
 import MagasinDashboard from '../views/magasin/dashboard/Pages/DashboardPage.vue'
 import LaboDashboard from '../views/labo/dashboard/Pages/DashboardPage.vue'
-import AdminDashboard from '../views/admin/dahboard/Pages/DashboardPage.vue'
+import AdminDashboard from '../views/admin/dashboard/Pages/DashboardPage.vue'
 import dashboardDashboard from '../views/dashboard/dashboard/Pages/DashboardPage.vue'
-import ScanPage from "../views/magasin/scan/Pages/ScanPage.vue"
+import ScanPage from '../views/magasin/scan/Pages/ScanPage.vue'
+// BO Views
+import BoSearchPage from '../views/bo/devices/Pages/SearchPage.vue'
+import BoDevicePage from '../views/bo/devices/Pages/DevicePage.vue'
+// Admin Views
+import UsersPage from '../views/admin/users/Pages/UsersPage.vue'
+import HistoryPage from '../views/admin/history/Pages/HistoryPage.vue'
 
 const routes = [
   {
@@ -52,11 +58,36 @@ const routes = [
     component: dashboardDashboard,
     meta: { requiresAuth: true }
   },
-  
   {
     path: '/magasin/scan',
     name: 'scan-index',
     component: ScanPage,
+    meta: { requiresAuth: true }
+  },
+  // BO Routes
+  {
+    path: '/bo/devices',
+    name: 'bo-device-search',
+    component: BoSearchPage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/bo/devices/:serial',
+    name: 'bo-device-details',
+    component: BoDevicePage,
+    meta: { requiresAuth: true }
+  },
+  // Admin Routes
+  {
+    path: '/admin/users',
+    name: 'admin-users',
+    component: UsersPage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/history',
+    name: 'admin-history',
+    component: HistoryPage,
     meta: { requiresAuth: true }
   }
 ]
@@ -79,8 +110,6 @@ router.beforeEach((to, from, next) => {
   } else {
     // Public page (Login)
     if (to.name === 'Login' && isAuthenticated) {
-      // Already logged in? Go to dashboard or home
-      // Optional: Redirect to specific role dashboard
       next({ name: 'Index' });
     } else {
       next();

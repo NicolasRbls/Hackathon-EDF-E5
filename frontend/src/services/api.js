@@ -131,6 +131,10 @@ export const actionService = {
 
     bulkCreateAction(bulkActionData) {
         return api.post('/actions/bulk', bulkActionData);
+    },
+
+    getDictionaries() {
+        return api.get('/devices/dictionaries');
     }
 };
 
