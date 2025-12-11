@@ -77,6 +77,66 @@ export const authService = {
 
     getUserRole() {
         return localStorage.getItem('user_role');
+    },
+
+    getCurrentUser() {
+        return api.get('/auth/users/me');
+    },
+
+    createUser(userData) {
+        return api.post('/auth/users', userData);
+    }
+};
+
+export const statsService = {
+    getStocks() {
+        return api.get('/stats/stocks');
+    },
+
+    getDashboardHistory(limit = 10) {
+        return api.get('/dashboard/history', { params: { limit } });
+    },
+
+    exportCSV() {
+        return api.get('/export/csv', { responseType: 'blob' });
+    }
+};
+
+export const deviceService = {
+    getDictionaries() {
+        return api.get('/devices/dictionaries');
+    },
+
+    searchDevices(params = {}) {
+        return api.get('/devices/search', { params });
+    },
+
+    getDevice(serialNumber) {
+        return api.get(`/devices/${serialNumber}`);
+    },
+
+    getCartonDetails(numCarton) {
+        return api.get(`/devices/carton/${numCarton}`);
+    },
+
+    createDevice(deviceData) {
+        return api.post('/devices/', deviceData);
+    }
+};
+
+export const actionService = {
+    createAction(actionData) {
+        return api.post('/actions/', actionData);
+    },
+
+    bulkCreateAction(bulkActionData) {
+        return api.post('/actions/bulk', bulkActionData);
+    }
+};
+
+export const historyService = {
+    searchHistory(params = {}) {
+        return api.get('/history/', { params });
     }
 };
 

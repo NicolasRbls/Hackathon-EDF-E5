@@ -1,12 +1,11 @@
 <template>
-  <div id="app" class="min-h-screen min-w-screen bg-white dark:bg-zinc-900 dark:text-gray-200">
+  <div id="app" class="min-h-screen bg-zinc-50 dark:bg-zinc-950 dark:text-zinc-200">
     <navbar-default>
       <navbar-item-default icon="home" title="Accueil" />
       <navbar-spacer />
       <navbar-search-default placeholder="Cherchez" />
     </navbar-default>
-    <!-- TODO ici implémentez la sidebar -->
-    <main class="h-full w-full max-w-4xl m-auto dark:bg-zinc-900 pt-2">
+    <main class="min-h-screen w-full">
       <slot/>
     </main>
   </div>
