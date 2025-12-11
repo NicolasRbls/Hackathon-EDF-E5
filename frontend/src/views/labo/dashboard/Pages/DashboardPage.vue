@@ -1,5 +1,4 @@
 <template>
-  <div class="min-h-screen p-6">
     <div class="mx-auto mb-8">
       <button @click="$router.push('/')"
         class="mb-4 flex items-center hover:text-orange-500">
@@ -11,7 +10,6 @@
       </h1>
     </div>
     <!--todo rajouter un dashboard avec graphs etc... un truc qui fait plaisir aux managers-->
-  </div>
 </template>
 
 <script>
