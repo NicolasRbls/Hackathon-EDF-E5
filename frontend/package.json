@@ -15,6 +15,7 @@
     "vite-plugin-pwa": "^0.17.5"
   },
   "dependencies": {
+    "@zxing/library": "^0.21.3",
     "alpinejs": "^3.13.5",
     "axios": "^1.6.5",
     "lucide-vue-next": "^0.559.0",
