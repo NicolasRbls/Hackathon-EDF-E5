@@ -12,4 +12,19 @@
   .card {
     @apply  bg-white dark:bg-zinc-600/20 rounded-xl shadow-lg p-6;
   }
+
+}
+
+@theme {
+    --color-accent: var(--color-zinc-900);
+    --color-accent-content: var(--color-zinc-900);
+    --color-accent-foreground: var(--color-white);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-zinc-900);
+    }
 }
