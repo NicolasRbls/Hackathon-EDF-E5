@@ -20,6 +20,12 @@ up:
 down:
 	@docker compose down
 
+# Stop and Remove Volumes (Reset DB)
+reset:
+	@echo "🧨 Resetting Database (Wiping Data)..."
+	@docker compose down -v
+	@echo "✅ Database reset complete. Run 'make work' to restart."
+
 # Run Tests
 test:
 	@cd backend && . venv/bin/activate && pytest tests/
@@ -27,3 +33,10 @@ test:
 # Install/Update Dependencies (including new Postgres driver)
 install:
 	@cd backend && . venv/bin/activate && pip install -r requirements.txt
+
+# Import Data from CSV
+load-data:
+	@echo "📥 Importing Data from CSV..."
+	@cd backend && . venv/bin/activate && python -m app.import_data
+	@echo "👤 Creating Admin User..."
+	@cd backend && . venv/bin/activate && python -m app.create_admin
