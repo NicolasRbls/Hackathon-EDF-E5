@@ -6,7 +6,7 @@
       <navbar-search-default placeholder="Cherchez" />
     </navbar-default>
     <!-- TODO ici implémentez la sidebar -->
-    <main class="h-full w-full max-w-4xl m-auto dark:bg-zinc-900 pt-6">
+    <main class="h-full w-full max-w-4xl m-auto dark:bg-zinc-900 pt-2">
       <slot/>
     </main>
   </div>

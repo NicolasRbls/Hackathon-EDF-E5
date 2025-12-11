@@ -18,8 +18,12 @@
     "@zxing/library": "^0.21.3",
     "alpinejs": "^3.13.5",
     "axios": "^1.6.5",
+    "chart.js": "^4.5.1",
+    "echarts": "^6.0.0",
     "lucide-vue-next": "^0.559.0",
+    "maplibre-gl": "^5.14.0",
     "vue": "^3.4.15",
+    "vue-echarts": "^8.0.1",
     "vue-router": "^4.2.5"
   }
 }
