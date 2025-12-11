@@ -11,7 +11,7 @@ Choix technologiques orientés **rapidité de développement**, **performance** 
 ### 🔙 Backend (High Performance)
 *   **[FastAPI](https://fastapi.tiangolo.com/)** : API Python ultra-rapide, validation automatique des données (Pydantic) et documentation auto-générée (Swagger UI).
 *   **[SQLAlchemy](https://www.sqlalchemy.org/)** : ORM robuste pour la gestion de la base de données.
-*   **[SQLite](https://www.sqlite.org/index.html)** : Base de données légère, sans configuration serveur ("Serverless"), idéale pour le déploiement rapide et le mode hors-ligne.
+*   **[PostgreSQL](https://www.postgresql.org/)** : Base de données robuste (Dockerisée).
 
 ### 🔜 Frontend (Modern & Responsive)
 *   **[Vue.js 3](https://vuejs.org/)** : Framework JS progressif et réactif.
@@ -39,7 +39,8 @@ PROJET_EDF_HACKATHON/
 │   │   ├── schemas.py   # Data Validation (Pydantic)
 │   │   ├── database.py  # SQLite Connection
 │   │   └── routers/     # API Endpoints Modules
-│   └── edf_track.db     # Base de données locale
+│   ├── .env             # Config (Credentials)
+│   └── routers/     # API Endpoints Modules
 │
 └── frontend/            # Interface Utilisateur (SPA)
     ├── src/
@@ -56,22 +57,19 @@ PROJET_EDF_HACKATHON/
 *   Python 3.9+
 *   Node.js 16+
 
-### 1. Démarrer le Backend
+### 1. Démarrage (The One Command)
 ```bash
-cd backend
-python3 -m venv venv           # Créer l'environnement virtuel
-source venv/bin/activate       # Activer (Linux/Mac)
-pip install -r requirements.txt # Installer les dépendances
-uvicorn app.main:app --reload  # Lancer le serveur
+make work
 ```
-> L'API sera accessible sur : `http://localhost:8000`  
-> Documentation interactive : `http://localhost:8000/docs`
+> Lance la BDD (Docker) + le Backend.
+> API : `http://localhost:8000`
 
-#### 2.1 Lancer les tests du backend
-```bash
-cd backend
-pytest tests/                  # Lancer les tests
-```
+> Documentation : `http://localhost:8000/docs`
+
+### Autres commandes
+*   `make down` : Éteindre la base de données.
+*   `make test` : Lancer les tests unitaires (DB en mémoire).
+*   `make install` : Installer les dépendances.
 
 ### 2. Démarrer le Frontend
 ```bash
