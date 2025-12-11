@@ -1,11 +1,13 @@
-from datetime import datetime
-from typing import Optional
 from pydantic import BaseModel, ConfigDict
-from .models import DeviceStatus, ActionType
+from datetime import datetime
+from typing import Optional, List
+from .models import DeviceStatus, ActionType, TypeAffectation
 
 class DeviceBase(BaseModel):
     serial_number: str
-    current_location: Optional[str] = "Inconnu"
+    num_carton: Optional[str] = None
+    operateur: Optional[str] = None
+    poste_pose: Optional[str] = None
 
 class DeviceCreate(DeviceBase):
     pass
@@ -13,23 +15,26 @@ class DeviceCreate(DeviceBase):
 class Device(DeviceBase):
     id: int
     current_status: DeviceStatus
+    affectation: TypeAffectation
     last_updated: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
 class ActionCreate(BaseModel):
-    serial_number: str
+    device_serial: str
     action_type: ActionType
-    location: Optional[str] = None
-    user_id: Optional[str] = "System"
+    user_id: str
+    details: Optional[str] = None 
+    # Contextual fields for state transitions
+    new_affectation: Optional[TypeAffectation] = None
+    new_status: Optional[DeviceStatus] = None
+    poste_pose: Optional[str] = None
 
 class History(BaseModel):
     id: int
     action_type: ActionType
     timestamp: datetime
-    user_id: str
-    location: Optional[str]
-    device_id: int
+    user_id: Optional[str]
+    details: Optional[str]
 
     model_config = ConfigDict(from_attributes=True)
-
