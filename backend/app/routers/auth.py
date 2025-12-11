@@ -27,6 +27,15 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.post("/logout")
+def logout():
+    """
+    Logout endpoint. 
+    For stateless JWT, the backend doesn't store active sessions. 
+    This generic endpoint informs the client to clear the token.
+    """
+    return {"message": "Successfully logged out"}
+
 @router.post("/users", response_model=schemas.UserResponse)
 def create_user(user: schemas.UserCreate, current_user: models.User = Depends(security.get_current_active_user), db: Session = Depends(get_db)):
     # 1. Check Permissions (Only Admin can create users)
