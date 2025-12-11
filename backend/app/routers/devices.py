@@ -97,3 +97,20 @@ def read_device(serial_number: str, db: Session = Depends(get_db)):
     if db_device is None:
         raise HTTPException(status_code=404, detail="Device not found")
     return db_device
+
+@router.get("/carton/{num_carton}")
+def get_carton_details(
+    num_carton: str, 
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(security.get_current_active_user)
+):
+    """
+    Get details of a specific carton and all devices contained within it.
+    """
+    devices = db.query(models.Device).filter(models.Device.num_carton == num_carton).all()
+    
+    return {
+        "num_carton": num_carton,
+        "count": len(devices),
+        "devices": devices
+    }
