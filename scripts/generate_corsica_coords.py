@@ -24,7 +24,7 @@ def is_point_in_polygon(lat, lon, polygon):
         
     return inside
 
-def generate_corsica_coords(num_points=500):
+def generate_corsica_coords(num_points=7000):
     # Simplified Polygon of Corsica (Lat, Lon)
     # Traced roughly from map to avoid water
     corsica_polygon = [
