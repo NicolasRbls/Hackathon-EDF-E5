@@ -7,7 +7,7 @@
         Retour
       </button>
       <h1 class="text-4xl font-bold text-edf-dark">
-        Interface <span class="text-edf-orange">Manager</span>
+        Interface <span class="text-edf-orange">BO</span>
       </h1>
     </div>
     <!--todo rajouter un dashboard avec graphs etc... un truc qui fait plaisir aux managers-->
