@@ -5,7 +5,7 @@
     <!-- KPI Cards Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard
-        title="Total Matériel"
+        title="Total MatÃ©riel"
         :value="totalDevices"
         icon="package"
         color="bg-edf-orange"
@@ -23,7 +23,7 @@
         color="bg-yellow-500"
       />
       <StatCard
-        title="À Tester"
+        title="Ã€ Tester"
         :value="stats.a_tester || 0"
         icon="flask-conical"
         color="bg-purple-500"
@@ -39,14 +39,14 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Status Distribution -->
         <ChartCard
-          title="Répartition par Statut"
+          title="RÃ©partition par Statut"
           :option="statusChartOption"
           height="350px"
         />
 
         <!-- Affectation Distribution -->
         <ChartCard
-          title="Répartition par Affectation"
+          title="RÃ©partition par Affectation"
           :option="affectationChartOption"
           height="350px"
         />
@@ -63,14 +63,14 @@
 
         <!-- Status Gauge -->
         <ChartCard
-          title="Taux de Disponibilité"
+          title="Taux de DisponibilitÃ©"
           :option="availabilityGaugeOption"
           height="300px"
         />
 
         <!-- Quality Status -->
         <ChartCard
-          title="État de Qualité"
+          title="Ã‰tat de QualitÃ©"
           :option="qualityChartOption"
           height="300px"
         />
@@ -79,7 +79,7 @@
       <!-- Recent History -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Dernières Actions</h3>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white">DerniÃ¨res Actions</h3>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -87,9 +87,9 @@
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Série</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SÃ©rie</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Utilisateur</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Détails</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">DÃ©tails</th>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -106,7 +106,7 @@
                   {{ item.device_id }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {{ item.user_id || "Système" }}
+                  {{ item.user_id || "SystÃ¨me" }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {{ item.details || "-" }}
@@ -175,8 +175,8 @@ const statusChartOption = computed(() => ({
       data: [
         { value: stats.value.en_stock || 0, name: 'En Stock', itemStyle: { color: '#22c55e' } },
         { value: stats.value.en_livraison || 0, name: 'En Livraison', itemStyle: { color: '#eab308' } },
-        { value: stats.value.pose || 0, name: 'Posé', itemStyle: { color: '#3b82f6' } },
-        { value: stats.value.a_tester || 0, name: 'À Tester', itemStyle: { color: '#a855f7' } },
+        { value: stats.value.pose || 0, name: 'PosÃ©', itemStyle: { color: '#3b82f6' } },
+        { value: stats.value.a_tester || 0, name: 'Ã€ Tester', itemStyle: { color: '#a855f7' } },
         { value: stats.value.HS || 0, name: 'HS', itemStyle: { color: '#ef4444' } }
       ]
     }

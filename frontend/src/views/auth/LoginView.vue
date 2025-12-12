@@ -10,7 +10,7 @@
           Connexion
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
-          Accédez à la plateforme de gestion des compteurs
+          Accédez à la plateforme de gestion des CPL
         </p>
       </div>
       
@@ -26,7 +26,7 @@
               required 
               v-model="username"
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-edf-orange focus:border-edf-orange focus:z-10 sm:text-sm" 
-              placeholder="Identifiant (ex: admin)" 
+              placeholder="Identifiant"
             />
           </div>
           <div>
