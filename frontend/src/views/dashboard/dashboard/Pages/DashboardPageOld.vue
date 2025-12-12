@@ -52,8 +52,8 @@
             label="En Stock"
             :value="stats.en_stock || 0"
             icon="package"
-            iconBgColor="bg-blue-100 dark:bg-blue-900"
-            iconColor="text-blue-600 dark:text-blue-400"
+            iconBgColor="bg-edf-blue-100 dark:bg-edf-blue-900"
+            iconColor="text-edf-orange dark:text-blue-400"
           />
           <StatCard
             label="En Transit"
@@ -513,7 +513,7 @@ const fetchData = async () => {
 
 const getActionBadgeClass = (actionType) => {
   const classes = {
-    'RECEPTION': 'bg-blue-100 text-blue-800',
+    'RECEPTION': 'bg-edf-blue-100 text-edf-blue-800',
     'POSE': 'bg-green-100 text-green-800',
     'DEPOSE': 'bg-red-100 text-red-800',
     'TRANSFERT': 'bg-purple-100 text-purple-800',

@@ -8,7 +8,7 @@
         title="Total Matériel"
         :value="totalDevices"
         icon="package"
-        color="bg-blue-500"
+        color="bg-edf-orange"
       />
       <StatCard
         title="En Stock"
@@ -244,7 +244,7 @@ const qualityChartOption = computed(() => ({
 
 const getActionBadgeClass = (actionType) => {
   const classes = {
-    'RECEPTION': 'bg-blue-100 text-blue-800',
+    'RECEPTION': 'bg-edf-blue-100 text-edf-blue-800',
     'POSE': 'bg-green-100 text-green-800',
     'DEPOSE': 'bg-red-100 text-red-800',
     'TRANSFERT': 'bg-purple-100 text-purple-800',

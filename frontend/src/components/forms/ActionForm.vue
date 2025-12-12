@@ -33,12 +33,12 @@
           type="text"
           required
           placeholder="Entrez le numéro de série"
-          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
         />
       </div>
 
       <!-- Pre-filled Serial Number Display -->
-      <div v-else class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+      <div v-else class="p-4 bg-edf-blue-50 dark:bg-edf-blue-900/20 border border-edf-blue-200 dark:border-edf-blue-800 rounded-lg">
         <p class="text-sm text-zinc-600 dark:text-zinc-400">Numéro de série</p>
         <p class="text-lg font-semibold text-zinc-900 dark:text-white">{{ deviceSerial }}</p>
       </div>
@@ -51,7 +51,7 @@
         <select
           v-model="formData.action_type"
           required
-          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
         >
           <option value="">Sélectionnez une action</option>
           <option v-for="action in allowedActions" :key="action.value" :value="action.value">
@@ -68,7 +68,7 @@
         <select
           v-model="formData.new_affectation"
           required
-          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
         >
           <option value="">Sélectionnez une affectation</option>
           <option v-for="aff in affectations" :key="aff" :value="aff">
@@ -85,7 +85,7 @@
         <select
           v-model="formData.new_status"
           required
-          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
         >
           <option value="">Sélectionnez un statut</option>
           <option v-for="status in statuses" :key="status" :value="status">
@@ -104,7 +104,7 @@
           type="text"
           required
           placeholder="Ex: Poste Bastia Centre"
-          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
         />
       </div>
 
@@ -119,7 +119,7 @@
             type="number"
             step="0.000001"
             placeholder="42.xxxxx"
-            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
           />
         </div>
         <div>
@@ -131,7 +131,7 @@
             type="number"
             step="0.000001"
             placeholder="9.xxxxx"
-            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
           />
         </div>
         <div class="col-span-2">
@@ -155,7 +155,7 @@
           v-model="formData.details"
           rows="3"
           placeholder="Informations complémentaires..."
-          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-edf-orange/50 focus:border-edf-orange transition-colors"
         ></textarea>
       </div>
 
@@ -164,7 +164,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="flex-1 px-6 py-3 bg-edf-orange hover:bg-edf-orange-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ loading ? 'Enregistrement...' : submitButtonText }}
         </button>

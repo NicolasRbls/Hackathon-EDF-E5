@@ -27,7 +27,7 @@
 
     <!-- Controls -->
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-6 bg-black bg-opacity-40 p-3 rounded-full backdrop-blur-md z-10 pointer-events-auto">
-       <button @click.stop="toggleCamera" class="p-2 text-white hover:text-blue-400 transition transform hover:scale-110" title="Changer de caméra">
+       <button @click.stop="toggleCamera" class="p-2 text-white hover:text-edf-orange transition transform hover:scale-110" title="Changer de caméra">
           <Icon name="switch-camera" size="24" />
        </button>
     </div>

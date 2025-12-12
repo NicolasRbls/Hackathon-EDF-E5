@@ -41,7 +41,7 @@ defineProps({
   },
   gradientClass: {
     type: String,
-    default: 'bg-gradient-to-br from-zinc-800 via-zinc-900 to-black'
+    default: 'bg-gradient-to-br from-edf-orange via-edf-orange-600 to-edf-blue'
   }
 });
 </script>

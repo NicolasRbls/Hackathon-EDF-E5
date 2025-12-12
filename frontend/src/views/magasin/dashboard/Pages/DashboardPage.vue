@@ -20,7 +20,7 @@
       <!-- Transfert -->
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow cursor-pointer hover:shadow-md transition" @click="openModal('transfert')">
         <div class="flex items-center space-x-4">
-          <div class="p-3 bg-blue-100 text-blue-600 rounded-full">
+          <div class="p-3 bg-blue-100 text-edf-orange rounded-full">
             <Icon name="arrow-right-left" size="24" />
           </div>
           <div>
@@ -119,7 +119,7 @@
         title="Total Stocks"
         :value="totalStocks"
         icon="package"
-        color="bg-blue-500"
+        color="bg-edf-orange"
       />
       <StatCard
         title="Cartons"

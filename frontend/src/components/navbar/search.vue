@@ -1,7 +1,7 @@
 <template>
   <div class="h-12 flex items-center gap-2 px-1">
     <Icon name="search" size="20" />
-    <input :placeholder="placeholder" class="px-2 py-1 border rounded-lg block leading-[1.375rem] bg-white dark:bg-white/10 text-zinc-700 placeholder-zinc-400 dark:text-zinc-300 dark:placeholder-zinc-400 border-zinc-200 border-b-zinc-300/80 dark:border-white/10"/>
+    <input :placeholder="placeholder" class="px-2 py-1 border rounded-lg block leading-[1.375rem] bg-white dark:bg-white/10 text-zinc-700 placeholder-zinc-400 dark:text-zinc-300 dark:placeholder-zinc-400 border-zinc-200 border-b-zinc-300/80 dark:border-white/10 focus:border-edf-orange focus:ring-2 focus:ring-edf-orange/20 outline-none transition-all"/>
   </div>
 </template>
 

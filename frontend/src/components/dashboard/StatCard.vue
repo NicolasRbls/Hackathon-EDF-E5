@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6">
+  <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6 hover:border-edf-orange/30">
     <div class="flex items-start justify-between gap-3">
       <div class="flex-1 min-w-0">
         <p class="text-xs sm:text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide truncate">{{ label }}</p>
@@ -47,11 +47,11 @@ const props = defineProps({
   },
   iconBgColor: {
     type: String,
-    default: 'bg-blue-100 dark:bg-blue-900'
+    default: 'bg-edf-orange-100 dark:bg-edf-orange-900/30'
   },
   iconColor: {
     type: String,
-    default: 'text-blue-600 dark:text-blue-400'
+    default: 'text-edf-orange dark:text-edf-orange-400'
   },
   trend: {
     type: Number,

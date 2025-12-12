@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transform transition hover:scale-[1.01]">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transform transition hover:scale-[1.01] hover:border-edf-orange/30">
     <!-- Header: Status & ID -->
     <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-start">
       <div>
@@ -64,13 +64,13 @@ const props = defineProps({
 
 const statusBadgeClass = computed(() => {
   const map = {
-    'en_stock': 'bg-green-100 text-green-700',
-    'en_livraison': 'bg-yellow-100 text-yellow-700',
-    'pose': 'bg-blue-100 text-blue-700',
-    'HS': 'bg-red-100 text-red-700',
-    'a_tester': 'bg-purple-100 text-purple-700'
+    'en_stock': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    'en_livraison': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    'pose': 'bg-edf-blue-100 text-edf-blue-700 dark:bg-edf-blue-900/30 dark:text-edf-blue-400',
+    'HS': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    'a_tester': 'bg-edf-orange-100 text-edf-orange-700 dark:bg-edf-orange-900/30 dark:text-edf-orange-400'
   };
-  return map[props.device.current_status] || 'bg-gray-100 text-gray-700';
+  return map[props.device.current_status] || 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
 });
 
 const formatDate = (d) => {

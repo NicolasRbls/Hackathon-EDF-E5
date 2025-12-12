@@ -1,5 +1,5 @@
 <template>
-  <div class="h-12 border-b-2 flex items-center gap-2 px-1 cursor-pointer">
+  <div class="h-12 border-b-2 border-transparent hover:border-edf-orange flex items-center gap-2 px-1 cursor-pointer transition-colors hover:text-edf-orange">
     <Icon :name="icon" size="16" />
     <p>{{ title }}</p>
   </div>

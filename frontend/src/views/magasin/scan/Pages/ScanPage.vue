@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="bg-white dark:bg-gray-800 shadow-sm p-4 flex items-center justify-between z-10 flex-none">
       <h1 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-        <Icon name="scan-line" class="mr-3 text-blue-600" />
+        <Icon name="scan-line" class="mr-3 text-edf-orange" />
         Scanner
       </h1>
       <router-link :to="{ name: 'dashboard-index' }" class="text-gray-500 hover:text-gray-700">

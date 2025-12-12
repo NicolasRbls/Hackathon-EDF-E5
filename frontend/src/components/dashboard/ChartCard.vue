@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 overflow-hidden">
+  <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6 overflow-hidden hover:border-edf-blue/30 transition-colors">
     <div class="flex items-center justify-between mb-3 sm:mb-4">
       <h3 :class="titleClass || 'text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100 truncate'">{{ title }}</h3>
       <slot name="actions"></slot>

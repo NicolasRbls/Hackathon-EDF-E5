@@ -1,25 +1,25 @@
 <template>
   <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Gérer le matériel</h1>
+      <h1 class="text-2xl font-bold">GÃ©rer le matÃ©riel</h1>
       <router-link :to="{ name: 'bo-device-search' }" class="text-gray-600 hover:text-gray-900">Retour</router-link>
     </div>
 
     <div v-if="loading" class="text-center">Chargement...</div>
     <div v-else class="bg-white rounded shadow p-6 max-w-2xl mx-auto">
       <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Numéro de Série</label>
+        <label class="block text-gray-700 font-bold mb-2">NumÃ©ro de SÃ©rie</label>
         <p class="p-2 bg-gray-100 rounded">{{ device.serial_number }}</p>
       </div>
 
       <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Numéro de Carton</label>
+        <label class="block text-gray-700 font-bold mb-2">NumÃ©ro de Carton</label>
         <input v-model="form.num_carton" type="text" class="w-full border rounded p-2">
       </div>
 
       <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2">Opérateur</label>
-        <input v-model="form.operateur" type="text" class="w-full border rounded p-2" placeholder="Nom de l'opérateur">
+        <label class="block text-gray-700 font-bold mb-2">OpÃ©rateur</label>
+        <input v-model="form.operateur" type="text" class="w-full border rounded p-2" placeholder="Nom de l'opÃ©rateur">
       </div>
 
       <h2 class="text-xl font-bold mt-8 mb-4">Nouvelle Action</h2>
@@ -30,13 +30,13 @@
             <option value="TRANSFERT">Transfert</option>
             <option value="TEST">Test</option>
             <option value="POSE">Pose</option>
-            <option value="DEPOSE">Dépose</option>
+            <option value="DEPOSE">DÃ©pose</option>
             <option value="AUTRE">Autre</option>
           </select>
         </div>
 
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2">Détails</label>
+          <label class="block text-gray-700 font-bold mb-2">DÃ©tails</label>
           <textarea v-model="actionForm.details" class="w-full border rounded p-2"></textarea>
         </div>
 
@@ -86,7 +86,7 @@ const submitAction = async () => {
       details: actionForm.value.details
     };
     await axios.post(`${API_URL}/actions/`, payload);
-    alert('Action enregistrée');
+    alert('Action enregistrÃ©e');
     const res = await axios.get(`${API_URL}/devices/${serial}`);
     device.value = res.data;
   } catch (e) {

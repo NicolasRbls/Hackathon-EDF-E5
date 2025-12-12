@@ -5,7 +5,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <button
           @click="$router.push('/')"
-          class="mb-4 flex items-center text-white hover:text-blue-100 transition-colors"
+          class="mb-4 flex items-center text-white hover:text-white transition-colors"
         >
           <Icon name="ArrowLeft" class="pr-2" />
           Retour
@@ -15,7 +15,7 @@
             <h1 class="text-4xl font-bold text-white">
               Dashboard Bureaux d'Opération
             </h1>
-            <p class="text-blue-100 mt-2">Suivi des équipements par bureau régional</p>
+            <p class="text-white/90 mt-2">Suivi des équipements par bureau régional</p>
           </div>
           <Icon name="building-2" :size="48" class="text-white opacity-50" />
         </div>
@@ -38,8 +38,8 @@
             :value="boStats.nord"
             subtitle="équipements"
             icon="map-pin"
-            iconBgColor="bg-blue-100 dark:bg-blue-900"
-            iconColor="text-blue-600 dark:text-blue-400"
+            iconBgColor="bg-edf-blue-100 dark:bg-edf-blue-900"
+            iconColor="text-edf-orange dark:text-blue-400"
           />
           <StatCard
             label="BO Centre"
@@ -129,7 +129,7 @@
               <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 <tr v-for="item in boHistory" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-edf-blue-100 text-edf-blue-800">
                       {{ item.bureau || 'N/A' }}
                     </span>
                   </td>
@@ -422,7 +422,7 @@ const fetchData = async () => {
 
 const getActionBadgeClass = (actionType) => {
   const classes = {
-    'RECEPTION': 'bg-blue-100 text-blue-800',
+    'RECEPTION': 'bg-edf-blue-100 text-edf-blue-800',
     'POSE': 'bg-green-100 text-green-800',
     'DEPOSE': 'bg-red-100 text-red-800',
     'TRANSFERT': 'bg-purple-100 text-purple-800',

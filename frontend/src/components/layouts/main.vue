@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="min-h-screen bg-zinc-50 dark:bg-zinc-950 dark:text-zinc-200">
+  <div id="app" class="min-h-screen bg-gray-50 dark:bg-zinc-950 dark:text-zinc-200">
     <navbar-default>
       <navbar-item-default icon="home" title="Accueil" />
       <navbar-spacer />

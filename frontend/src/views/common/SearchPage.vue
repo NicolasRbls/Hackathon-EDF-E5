@@ -33,7 +33,7 @@
                 <button
                   type="submit"
                   :disabled="loading"
-                  class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  class="px-8 py-3 bg-edf-orange hover:bg-edf-orange-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   <Icon name="search" :size="20" />
                   {{ loading ? 'Recherche...' : 'Rechercher' }}
@@ -91,7 +91,7 @@
             <button
               type="button"
               @click="showAdvancedFilters = !showAdvancedFilters"
-              class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              class="text-sm text-edf-orange dark:text-edf-orange-400 hover:underline"
             >
               {{ showAdvancedFilters ? 'Masquer les filtres avancés' : 'Afficher les filtres avancés' }}
             </button>
@@ -304,7 +304,7 @@ const getStatusLabel = (status) => {
 
 const getStatusBadgeClass = (status) => {
   const classes = {
-    'en_livraison': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+    'en_livraison': 'bg-yellow-100 text-yellow-800 dark:bg-blue-900/30 dark:text-edf-orange-400',
     'en_stock': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
     'pose': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
     'a_tester': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
@@ -315,7 +315,7 @@ const getStatusBadgeClass = (status) => {
 
 const getActionDotClass = (actionType) => {
   const classes = {
-    'RECEPTION': 'bg-blue-500',
+    'RECEPTION': 'bg-edf-blue',
     'POSE': 'bg-green-500',
     'DEPOSE': 'bg-red-500',
     'TRANSFERT': 'bg-purple-500',
